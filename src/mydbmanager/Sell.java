@@ -16,8 +16,14 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRTableModelDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -260,7 +266,7 @@ public class Sell extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "Item name", "Rate", "Quantity", "Total"
+                "No", "Item name", "Rate", "Quantity", "Total"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -286,6 +292,11 @@ public class Sell extends javax.swing.JFrame {
         });
 
         print.setText("Print");
+        print.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                printActionPerformed(evt);
+            }
+        });
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel11.setText("Total");
@@ -607,7 +618,13 @@ public class Sell extends javax.swing.JFrame {
             pst=conn.prepareStatement(sql);
            if( pst.executeUpdate()==1){
                JOptionPane.showMessageDialog(null, "Added successfully");
-               this.dispose();
+               custname.setText("");
+               address.setText("Address");
+               city.setText("City/town");
+               itemname.setText("");
+               rate.setText("0.00");
+               qut.setValue(1);
+               total.setText("0.00");
            }
             }
         }
@@ -634,8 +651,48 @@ public class Sell extends javax.swing.JFrame {
 
     private void findinvoiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findinvoiceActionPerformed
         // TODO add your handling code here:
-        
+        try {
+            SimpleDateFormat dtfrmat=new SimpleDateFormat("yyyy-MM-dd");
+            String sql="SELECT * FROM Sell WHERE [Date] = '"+dtfrmat.format(date.getDate())+"' AND Customer_name='"+custname.getText()+"'";
+            pst=conn.prepareStatement(sql);
+            rs=pst.executeQuery();
+            DefaultTableModel table = (DefaultTableModel)itemtable.getModel();
+            table.setRowCount(0);
+            int serial=0;
+            if(!(rs.next()))
+                JOptionPane.showMessageDialog(null, "No record found");
+            else
+            {
+            do 
+            {
+                Object[] row={++serial,rs.getString("Item"),Format(rs.getDouble("Rate")),rs.getInt("Quantity"),Format(rs.getDouble("Total"))};
+                Addrow(row);
+            }while(rs.next());
+            summation();
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
     }//GEN-LAST:event_findinvoiceActionPerformed
+
+    private void printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printActionPerformed
+        // TODO add your handling code here:
+         DefaultTableModel dtm = (DefaultTableModel)itemtable.getModel();
+            HashMap<String, Object> para= new HashMap<>();
+            summation();
+            para.put("Total",totallabel.getText());
+            try{
+            JasperCompileManager.compileReportToFile("E:\\Data entry_Project\\MyDBmanager\\src\\mydbmanager\\Invoice.jrxml",
+                    "E:\\Data entry_Project\\MyDBmanager\\src\\mydbmanager\\Invoice.jasper");
+             JasperPrint  printing = (JasperPrint) JasperFillManager.fillReport("E:\\Data entry_Project\\MyDBmanager\\src\\mydbmanager"
+                     + "\\Invoice.jasper",para,new JRTableModelDataSource(dtm));
+            JasperViewer.viewReport(printing);
+            }
+            catch(Exception e)
+            {
+                JOptionPane.showMessageDialog(null, e);
+            }
+    }//GEN-LAST:event_printActionPerformed
 
     /**
      * @param args the command line arguments
