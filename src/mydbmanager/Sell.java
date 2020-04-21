@@ -49,7 +49,7 @@ public class Sell extends javax.swing.JFrame {
     public Sell() {
         initComponents();       
         date.setDate(dt);
-        //print.setEnabled(false);
+        print.setEnabled(false);
         qut.setValue(1);
          try{
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
@@ -141,7 +141,7 @@ public class Sell extends javax.swing.JFrame {
             txt.moveCaretPosition(start);
         }        
     }
-    
+    String company="";
     public void filldetails()
     {
         custname.setText(custname.getText());
@@ -153,6 +153,8 @@ public class Sell extends javax.swing.JFrame {
                     city.setText(rs.getString("City_town"));
                     phone.setText(rs.getString("Phone_no"));
                     emailid.setText(rs.getString("EmailID"));
+                    if(rs.getString("Customer_type").equals("Company"))
+                        company=rs.getString("Company");
                 }
                 else
                     JOptionPane.showMessageDialog(null, "Record not found");
@@ -857,8 +859,7 @@ public class Sell extends javax.swing.JFrame {
         DefaultTableModel dtm= (DefaultTableModel) itemtable.getModel();
         int rowcount=dtm.getRowCount();
         DefaultTableModel dtm2= new DefaultTableModel(dtm.getDataVector(),columnNames);
-        int d=18+(int)(Math.ceil((rowcount-18)/30.0d))*30; 
-        for(int i=dtm2.getRowCount();i<18+(int)(Math.ceil((rowcount-18)/30.0d))*30;i++)
+        for(int i=dtm2.getRowCount();i<(int)(Math.ceil(rowcount/18.0d))*18;i++)
         dtm2.addRow(new Object[]{"","","","",""});
             HashMap<String, Object> para= new HashMap<>();
             para.put("Grandtotal",grandtotal.getText());
@@ -866,6 +867,7 @@ public class Sell extends javax.swing.JFrame {
             para.put("discountper",discpercent.getText());
             para.put("discountamt",discamt.getText());
             para.put("custname",custname.getText());
+            para.put("Company",company);
             para.put("Address",address.getText());
             para.put("City", city.getText());
             para.put("phone",phone.getText());
