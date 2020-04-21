@@ -7,6 +7,7 @@ package mydbmanager;
 
 import java.awt.Event;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -384,6 +385,11 @@ public class Sell extends javax.swing.JFrame {
         jLabel12.setText("Discount(%)");
 
         discpercent.setText("0");
+        discpercent.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                discpercentFocusLost(evt);
+            }
+        });
         discpercent.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 discpercentKeyPressed(evt);
@@ -880,17 +886,32 @@ public class Sell extends javax.swing.JFrame {
             }
             dtm.setRowCount(rowcount);
     }//GEN-LAST:event_printActionPerformed
-
+    String prevdiscper="";
     private void discpercentKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_discpercentKeyPressed
         // TODO add your handling code here:
-        if(((evt.getKeyChar()>=48&&evt.getKeyChar()<=57))||evt.getKeyChar()=='.'||evt.getKeyCode()==Event.BACK_SPACE||evt.getKeyCode()==Event.ENTER)
+        //if(((evt.getKeyChar()>=48&&evt.getKeyChar()<=57))||evt.getKeyChar()=='.'||evt.getKeyCode()==Event.BACK_SPACE||evt.getKeyCode()==Event.ENTER)
            //give override
-            EventQueue.invokeLater(new Runnable() {
+         
+           EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-            summation();
+                 try{
+                     if(!discpercent.getText().equals("")){
+                         NullPointerException nullPointer = new NullPointerException();
+                         if((evt.getKeyChar()>='A'&&evt.getKeyChar()<='Z')||(evt.getKeyChar()>='a'&&evt.getKeyChar()<='z')||evt.getKeyChar()==32||
+                                 Double.parseDouble(discpercent.getText())<0.0||Double.parseDouble(discpercent.getText())>100.0)
+                            throw nullPointer; 
+                        summation();
+                        prevdiscper=discpercent.getText();}
+                 }
+                 catch(Exception e)
+          {
+              Toolkit.getDefaultToolkit().beep();
+              discpercent.setText(prevdiscper);
+          }
             }
             });
+          
     }//GEN-LAST:event_discpercentKeyPressed
 
     private void custnameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_custnameActionPerformed
@@ -904,6 +925,13 @@ public class Sell extends javax.swing.JFrame {
     private void rateCaretPositionChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_rateCaretPositionChanged
 
     }//GEN-LAST:event_rateCaretPositionChanged
+
+    private void discpercentFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_discpercentFocusLost
+        // TODO add your handling code here:
+        if(discpercent.getText().equals("")){
+        discpercent.setText("0");
+        summation();}
+    }//GEN-LAST:event_discpercentFocusLost
 
     /**
      * @param args the command line arguments
