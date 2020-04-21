@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed482026-51bf-4d53-b69a-8e75854f000a">
-	<property name="ireport.zoom" value="1.6105100000000452"/>
+	<property name="ireport.zoom" value="1.100000000000034"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="193"/>
+	<property name="ireport.y" value="0"/>
 	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
 	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
@@ -24,6 +24,7 @@
 	<parameter name="Subtotal" class="java.lang.String"/>
 	<parameter name="discountamt" class="java.lang.String"/>
 	<parameter name="discountper" class="java.lang.String"/>
+	<parameter name="Company" class="java.lang.String"/>
 	<field name="No" class="java.lang.Object"/>
 	<field name="Item name" class="java.lang.Object"/>
 	<field name="Rate" class="java.lang.Object"/>
@@ -37,7 +38,13 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="262" splitType="Stretch">
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="282" splitType="Stretch">
 			<image>
 				<reportElement x="0" y="0" width="60" height="34" uuid="07ac8256-44a2-4a68-859d-c3462641011b"/>
 				<imageExpression><![CDATA["coffee.jpg"]]></imageExpression>
@@ -145,66 +152,66 @@
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$P{Date}]]></textFieldExpression>
 			</textField>
-		</band>
-	</title>
-	<pageHeader>
-		<band splitType="Stretch"/>
-	</pageHeader>
-	<columnHeader>
-		<band height="20" splitType="Stretch">
 			<rectangle>
-				<reportElement x="0" y="0" width="555" height="20" forecolor="#564B35" backcolor="#F2EBDF" uuid="1d9f1573-eda7-48ac-b899-daa7c87e7ede"/>
+				<reportElement x="0" y="262" width="555" height="20" forecolor="#564B35" backcolor="#F2EBDF" uuid="1d9f1573-eda7-48ac-b899-daa7c87e7ede"/>
 				<graphicElement>
 					<pen lineWidth="0.0" lineColor="#564B35"/>
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="72" y="0" width="183" height="20" forecolor="#564B35" uuid="f4163593-59cb-4e93-93de-3664fdca72d7"/>
+				<reportElement x="72" y="262" width="183" height="20" forecolor="#564B35" uuid="f4163593-59cb-4e93-93de-3664fdca72d7"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Item name]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="0" width="72" height="20" forecolor="#564B35" uuid="a3b06695-492c-4daf-a51f-ae4f1af0ff66"/>
+				<reportElement x="0" y="262" width="72" height="20" forecolor="#564B35" uuid="a3b06695-492c-4daf-a51f-ae4f1af0ff66"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[No]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="455" y="0" width="100" height="20" forecolor="#564B35" uuid="e3622239-bc31-4410-b078-4dd1c7d5f937"/>
+				<reportElement x="455" y="262" width="100" height="20" forecolor="#564B35" uuid="e3622239-bc31-4410-b078-4dd1c7d5f937"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="255" y="0" width="100" height="20" forecolor="#564B35" uuid="14a21190-a0d5-4581-aa3e-8482d11444a1"/>
+				<reportElement x="255" y="262" width="100" height="20" forecolor="#564B35" uuid="14a21190-a0d5-4581-aa3e-8482d11444a1"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Rate]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="355" y="1" width="100" height="19" forecolor="#564B35" uuid="ec4029f0-f933-482b-a591-81149a4ec3ef"/>
+				<reportElement x="355" y="263" width="100" height="19" forecolor="#564B35" uuid="ec4029f0-f933-482b-a591-81149a4ec3ef"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Quantity]]></text>
 			</staticText>
 			<line>
-				<reportElement x="0" y="0" width="1" height="20" forecolor="#564B35" uuid="7e48eb80-2c34-4f65-8ab9-a38d9b8281f3"/>
+				<reportElement x="0" y="262" width="1" height="20" forecolor="#564B35" uuid="7e48eb80-2c34-4f65-8ab9-a38d9b8281f3"/>
 			</line>
 			<line>
-				<reportElement x="554" y="0" width="1" height="20" forecolor="#564B35" uuid="0830c636-d7e3-47c2-81bc-b26b9ed8cba0"/>
+				<reportElement x="554" y="262" width="1" height="20" forecolor="#564B35" uuid="0830c636-d7e3-47c2-81bc-b26b9ed8cba0"/>
 			</line>
 			<line>
-				<reportElement x="0" y="19" width="555" height="1" forecolor="#564B35" uuid="5c8dbceb-a551-45d5-b8c9-deaf290eedfa"/>
+				<reportElement x="0" y="281" width="555" height="1" forecolor="#564B35" uuid="5c8dbceb-a551-45d5-b8c9-deaf290eedfa"/>
 			</line>
 			<line>
-				<reportElement x="0" y="0" width="555" height="1" forecolor="#564B35" uuid="bb07c89c-e92d-4792-9e23-5a1849759629"/>
+				<reportElement x="0" y="261" width="555" height="1" forecolor="#564B35" uuid="bb07c89c-e92d-4792-9e23-5a1849759629"/>
 			</line>
+			<textField>
+				<reportElement x="12" y="229" width="343" height="20" uuid="588c97bd-9d90-4dc0-a9e3-81f8e3ff9177"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{Company}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
