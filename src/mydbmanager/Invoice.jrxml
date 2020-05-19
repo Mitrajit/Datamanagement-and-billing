@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed482026-51bf-4d53-b69a-8e75854f000a">
-	<property name="ireport.zoom" value="1.100000000000034"/>
+	<property name="ireport.zoom" value="1.464100000000047"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="163"/>
 	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
 	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
@@ -177,14 +177,14 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Total]]></text>
+				<text><![CDATA[Total (in ₹)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="255" y="262" width="100" height="20" forecolor="#564B35" uuid="14a21190-a0d5-4581-aa3e-8482d11444a1"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Rate]]></text>
+				<text><![CDATA[Rate (in ₹)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="355" y="263" width="100" height="19" forecolor="#564B35" uuid="ec4029f0-f933-482b-a591-81149a4ec3ef"/>
@@ -271,17 +271,17 @@
 				<text><![CDATA[GRAND TOTAL]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="455" y="0" width="98" height="20" uuid="a6a16309-d61a-4da0-908b-2674c87d681d"/>
+				<reportElement x="464" y="1" width="88" height="20" uuid="a6a16309-d61a-4da0-908b-2674c87d681d"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{Subtotal}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="455" y="20" width="98" height="20" uuid="32802f84-3967-4ba9-a132-39ce922aa2ff"/>
+				<reportElement x="464" y="20" width="88" height="20" uuid="32802f84-3967-4ba9-a132-39ce922aa2ff"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{discountamt}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="413" y="20" width="20" height="20" uuid="14b23ee4-e75f-403c-8fbc-bf59fe1a9021"/>
+				<reportElement x="410" y="20" width="20" height="20" uuid="14b23ee4-e75f-403c-8fbc-bf59fe1a9021"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{discountper}]]></textFieldExpression>
 			</textField>
@@ -291,7 +291,7 @@
 				<text><![CDATA[Discount @ ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="433" y="20" width="10" height="20" uuid="9fe42543-4354-4933-93d8-013d5687d2a4"/>
+				<reportElement x="431" y="20" width="10" height="20" uuid="9fe42543-4354-4933-93d8-013d5687d2a4"/>
 				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[%]]></text>
 			</staticText>
@@ -303,7 +303,7 @@
 				<text><![CDATA[Seal. Authorised Signature.]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="455" y="45" width="98" height="20" uuid="afae8005-52cd-4fb2-a74e-6d7b07ccd9ff"/>
+				<reportElement x="464" y="45" width="89" height="20" uuid="afae8005-52cd-4fb2-a74e-6d7b07ccd9ff"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -335,6 +335,23 @@
 			<line>
 				<reportElement x="353" y="43" width="202" height="1" forecolor="#564B35" uuid="b25137cb-bac7-41db-9507-55c5205bba22"/>
 			</line>
+			<staticText>
+				<reportElement x="455" y="1" width="9" height="20" uuid="cf05f537-c991-4f78-90b2-b946b70efca7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[₹]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="455" y="20" width="9" height="20" uuid="bae1f092-731c-466d-b395-cae8ed8bd666"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[₹]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="455" y="45" width="9" height="20" uuid="72eba09f-edca-4df3-b0f1-d6e60f1098e3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[₹]]></text>
+			</staticText>
 		</band>
 	</columnFooter>
 	<pageFooter>
