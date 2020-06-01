@@ -5,7 +5,6 @@
  */
 package mydbmanager;
 
-import java.awt.Event;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
@@ -13,18 +12,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
-import javafx.scene.input.KeyCode;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -83,6 +78,8 @@ public class Sell extends javax.swing.JFrame {
     
     public void autofillstock(){
         int start = itemname.getText().length();
+        if (start==0)
+            return;
         int last = start;
         rate.setText(Format(0d));
         qutshow.setText(" ");
@@ -121,6 +118,8 @@ public class Sell extends javax.swing.JFrame {
     }
     private void retriveIVN()
     {
+        if(!ivno.isEnabled())
+            return;
         try{
          String sql="SELECT last(Invoice_no) AS IVN FROM Sell";
             pst=conn.prepareStatement(sql);
@@ -201,6 +200,8 @@ public class Sell extends javax.swing.JFrame {
     String company="";
     public void filldetails()
     {
+        if(!custname.isEnabled())
+            return;
        if(!(custname.getText().equals("CASH")||custname.getText().equals(""))){
         custname.setText(custname.getText());
             try {
@@ -238,11 +239,18 @@ public class Sell extends javax.swing.JFrame {
                     due.setText(Format(rs.getDouble("Due")));
                 }
                 else
-                    JOptionPane.showMessageDialog(null, "Record not found");
+                {   JOptionPane.showMessageDialog(null, "Record not found");
+                    address1.setText(" ");
+                    city1.setText(" ");
+                    phone1.setText(" ");
+                    emailid1.setText(" ");
+                    complab2.setText(" ");
+                    due.setText("0.00");
+                }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e);
             }
-        }
+        } 
     } 
     public void fillcusttable(){
         try{
@@ -359,10 +367,11 @@ public class Sell extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jTabbedPane1.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                jTabbedPane1FocusGained(evt);
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
             }
         });
 
@@ -1392,9 +1401,8 @@ public class Sell extends javax.swing.JFrame {
                     "','"+custname2.getText()+"','"+paymode.getSelectedItem()+"','"+txnno.getText()+"','"+Double.parseDouble(amtpaid.getText())+"')";
            
             pst=conn.prepareStatement(sql);
-            pst.executeUpdate();
+            pst.executeUpdate();            
             fillpaydetails();
-            fillcusttable();
             JOptionPane.showMessageDialog(null, "Paid successfully");
             if(receipt.isSelected()){//JASPER REPORT RECEIPT
                 try{
@@ -1424,6 +1432,14 @@ public class Sell extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, e);
             }
             }
+            fillcusttable();
+            custname2.setText("");
+            address1.setText(" ");
+                    city1.setText(" ");
+                    phone1.setText(" ");
+                    emailid1.setText(" ");
+                    complab2.setText(" ");
+                    due.setText("0.00");
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -1441,14 +1457,6 @@ public class Sell extends javax.swing.JFrame {
         custname2.setText(paytable.getValueAt(paytable.getSelectedRow(),0).toString());
         fillpaydetails();
     }//GEN-LAST:event_paytableMouseClicked
-
-    private void jTabbedPane1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTabbedPane1FocusGained
-        // TODO add your handling code here:
-        retriveIVN();
-        allocatestock();
-        fillcusttable();
-        filldetails();
-    }//GEN-LAST:event_jTabbedPane1FocusGained
 
     private void cashActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cashActionPerformed
         // TODO add your handling code here:
@@ -1479,6 +1487,14 @@ public class Sell extends javax.swing.JFrame {
         }
         calculate();
     }//GEN-LAST:event_qutpcStateChanged
+
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        // TODO add your handling code here:
+        retriveIVN();
+        allocatestock();
+        fillcusttable();
+        filldetails();
+    }//GEN-LAST:event_formWindowGainedFocus
 
     /**
      * @param args the command line arguments
