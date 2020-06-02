@@ -217,7 +217,7 @@ public class Sell extends javax.swing.JFrame {
                 else
                     JOptionPane.showMessageDialog(null, "Record not found");
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, e);
+                       JOptionPane.showMessageDialog(null, e);                    
             }
        }
     }
@@ -1058,12 +1058,8 @@ public class Sell extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Stock not available");
         }
         catch (Exception e){
-        Addrow(new Object[]{serialno,itemname.getText(),rate.getText(),qut.getValue()+" "+Unit.getText(),total.getText()});}
-//        itemname.setText("");
-//        total.setText("0.00");
-//        rate.setText("0.00");
-//        qut.setValue(1);
-//        qutshow.setText(" ");
+            JOptionPane.showMessageDialog(null, "Item not in stock");
+        }
         summation();
     }//GEN-LAST:event_addActionPerformed
 
@@ -1095,8 +1091,26 @@ public class Sell extends javax.swing.JFrame {
             summation();
             if(!custname.getText().equals("")&&itemtable.getRowCount()!=0) {
                 SimpleDateFormat dtfrmat=new SimpleDateFormat("yyyy-MM-dd");
+                DefaultTableModel tm = (DefaultTableModel)itemtable.getModel();
+                allocatestock();
+                   for(int i=0;i<itemtable.getRowCount();i++){
+                       try {
+                           if(quantityavailable.get(itemtable.getValueAt(i, 1))>=quantifier(itemtable.getValueAt(i, 3).toString()))
+                           quantityavailable.replace(itemtable.getValueAt(i, 1).toString(), quantityavailable.get(itemtable.getValueAt(i, 1))-quantifier(itemtable.getValueAt(i, 3).toString()));
+                           else
+                               throw new NullPointerException();
+                       } catch (NullPointerException e) {
+                           JOptionPane.showMessageDialog(null, "Some items may not be in the stock");
+                           tm.setRowCount(0);
+                           summation();
+                           allocatestock();
+                           return;
+                       }
+                   }
+                   
                     String sql="SELECT * FROM CustomerProfile WHERE Customer_name='"+custname.getText()+"'";
                         if(customer.isSelected()){
+                            try{
                             pst=conn.prepareStatement(sql);
                             rs=pst.executeQuery();
                             rs.next();
@@ -1104,9 +1118,14 @@ public class Sell extends javax.swing.JFrame {
                                     +(rs.getDouble("Sale_amount")+Double.parseDouble(grandtotal.getText())-rs.getDouble("Paid"))+"' WHERE Customer_name='"+custname.getText()+"'";
                              pst=conn.prepareStatement(sql);
                              pst.executeUpdate();
+                            }
+                            catch(Exception e)
+                            {
+                                JOptionPane.showMessageDialog(null, "Customer name not found!");
+                                return;
+                            }
                         }
-                   
-//                    if( pst.executeUpdate()==1||cash.isSelected()){
+                        
                         for(int j=0;j<itemnames.size();j++)
                         {
                             sql="UPDATE Stock SET Qut_available = '"+quantityavailable.get(itemnames.get(j))+
@@ -1136,7 +1155,6 @@ public class Sell extends javax.swing.JFrame {
                         findinvoice.setEnabled(false);
                         confirm.setEnabled(false);
                         print.setEnabled(true);
-                    //}
                 
             } else
                 JOptionPane.showMessageDialog(null, "Fields are found empty.","Wrong exploitation",JOptionPane.ERROR_MESSAGE);
@@ -1334,6 +1352,8 @@ public class Sell extends javax.swing.JFrame {
                 autofillstock();
             }
         });
+         else if(evt.getKeyCode()==KeyEvent.VK_ENTER)
+             itemname.setText(itemname.getText());
     }//GEN-LAST:event_itemnameKeyPressed
 
     private void custnameFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_custnameFocusLost
@@ -1493,7 +1513,6 @@ public class Sell extends javax.swing.JFrame {
         retriveIVN();
         allocatestock();
         fillcusttable();
-        filldetails();
     }//GEN-LAST:event_formWindowGainedFocus
 
     /**
