@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
+import javax.security.auth.callback.ConfirmationCallback;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -44,6 +45,9 @@ public class Sell extends javax.swing.JFrame {
     ArrayList <String> itemnames = new ArrayList<>();
     ArrayList <Double> sellingprice = new ArrayList<>();
     HashMap <String, Integer> quantityavailable = new HashMap<>();
+    HashMap <String, Double> costprice = new HashMap<>();
+    HashMap <String, Double> minsellprice = new HashMap<>();
+    HashMap <String, Double> mrp = new HashMap<>();
     
     public Sell() {
         initComponents();
@@ -64,6 +68,9 @@ public class Sell extends javax.swing.JFrame {
             itemnames.clear();
             sellingprice.clear();
             quantityavailable.clear();
+            costprice.clear();
+            minsellprice.clear();
+            mrp.clear();
             String sql="SELECT * FROM Stock";
             pst=conn.prepareStatement(sql);
             rs=pst.executeQuery();
@@ -71,11 +78,33 @@ public class Sell extends javax.swing.JFrame {
                 itemnames.add(rs.getString("Item"));
                 sellingprice.add(rs.getDouble("Selling_price"));
                 quantityavailable.put(rs.getString("Item"),rs.getInt("Qut_available"));
+                costprice.put(rs.getString("Item"), rs.getDouble("Cost_price"));
+                minsellprice.put(rs.getString("Item"),rs.getDouble("Minsell_price"));
+                mrp.put(rs.getString("Item"), rs.getDouble("MRP"));
             }
         }
         catch(Exception e){JOptionPane.showMessageDialog(null, e);}
     }
     
+    private boolean deductfromstock()
+    {
+        DefaultTableModel tm=(DefaultTableModel)itemtable.getModel();
+        for(int i=0;i<itemtable.getRowCount();i++){
+                       try {
+                           if(quantityavailable.get(itemtable.getValueAt(i, 1))>=quantifier(itemtable.getValueAt(i, 3).toString()))
+                           quantityavailable.replace(itemtable.getValueAt(i, 1).toString(), quantityavailable.get(itemtable.getValueAt(i, 1))-quantifier(itemtable.getValueAt(i, 3).toString()));
+                           else
+                               throw new NullPointerException();
+                       } catch (NullPointerException e) {
+                           JOptionPane.showMessageDialog(null, "Some items may not be in the stock");
+                           tm.setRowCount(0);
+                           summation();
+                           allocatestock();
+                           return true;//returns true if item not found
+                       }
+                   }
+        return false;
+    }
     public void autofillstock(){
         int start = itemname.getText().length();
         if (start==0)
@@ -1032,7 +1061,7 @@ public class Sell extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteActionPerformed
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-        // TODO add your handling code here:
+         // TODO add your handling code here:
         int serialno;
         if(itemtable.getRowCount()==0)
             serialno=1;
@@ -1040,6 +1069,9 @@ public class Sell extends javax.swing.JFrame {
             serialno=Integer.parseInt(itemtable.getValueAt(itemtable.getRowCount()-1, 0).toString())+1;
         try{
         if(Integer.valueOf(qut.getValue().toString())*12+Integer.valueOf(qutpc.getValue().toString())<=quantityavailable.get(itemname.getText())){
+            if(Double.valueOf(rate.getText())<minsellprice.get(itemname.getText())||Double.valueOf(rate.getText())>mrp.get(itemname.getText())){
+                if(JOptionPane.showConfirmDialog(null, "The minimum selling price is "+Format(minsellprice.get(itemname.getText()))+" and the MRP is "+Format(mrp.get(itemname.getText()))+"\nDo you still want to proceed?","Confirmation",ConfirmationCallback.YES_NO_OPTION)!=0)
+                    return;}
         Addrow(new Object[]{serialno,itemname.getText(),rate.getText(),quantifier(Integer.valueOf(qut.getValue().toString())*12+
                 Integer.valueOf(qutpc.getValue().toString())),total.getText()});
         quantityavailable.replace(itemname.getText(), quantityavailable.get(itemname.getText())-Integer.valueOf(qut.getValue().toString())*12+
@@ -1093,20 +1125,8 @@ public class Sell extends javax.swing.JFrame {
                 SimpleDateFormat dtfrmat=new SimpleDateFormat("yyyy-MM-dd");
                 DefaultTableModel tm = (DefaultTableModel)itemtable.getModel();
                 allocatestock();
-                   for(int i=0;i<itemtable.getRowCount();i++){
-                       try {
-                           if(quantityavailable.get(itemtable.getValueAt(i, 1))>=quantifier(itemtable.getValueAt(i, 3).toString()))
-                           quantityavailable.replace(itemtable.getValueAt(i, 1).toString(), quantityavailable.get(itemtable.getValueAt(i, 1))-quantifier(itemtable.getValueAt(i, 3).toString()));
-                           else
-                               throw new NullPointerException();
-                       } catch (NullPointerException e) {
-                           JOptionPane.showMessageDialog(null, "Some items may not be in the stock");
-                           tm.setRowCount(0);
-                           summation();
-                           allocatestock();
-                           return;
-                       }
-                   }
+                if(deductfromstock())
+                    return;
                    
                     String sql="SELECT * FROM CustomerProfile WHERE Customer_name='"+custname.getText()+"'";
                         if(customer.isSelected()){
@@ -1134,9 +1154,9 @@ public class Sell extends javax.swing.JFrame {
                             pst.executeUpdate();}
                             
                         for(int i=0;i<itemtable.getRowCount();i++){
-                            sql="INSERT INTO Sell (Invoice_no,[Date],Customer_name,Address,City_town,Item,Rate,Quantity,Unit,Total,Discount) VALUES ('"+IVN+"','"+
+                            sql="INSERT INTO Sell (Invoice_no,[Date],Customer_name,Address,City_town,Item,Rate,Cost_price,Quantity,Unit,Total,Discount) VALUES ('"+IVN+"','"+
                             dtfrmat.format(date.getDate())+"','"+custname.getText()+"','"+address.getText()+"','"+city.getText()+"','"+
-                            itemtable.getValueAt(i, 1).toString()+"','"+Double.parseDouble(itemtable.getValueAt(i, 2).toString())+"','"+
+                            itemtable.getValueAt(i, 1).toString()+"','"+Double.parseDouble(itemtable.getValueAt(i, 2).toString())+"','"+costprice.get(itemtable.getValueAt(i, 1))+"','"+
                             quantifier(itemtable.getValueAt(i, 3).toString())+"','"+
                             "PCS"+"','"+            itemtable.getValueAt(i, 4)+"','"+discpercent.getText()+"')";
                             pst=conn.prepareStatement(sql);
@@ -1512,6 +1532,7 @@ public class Sell extends javax.swing.JFrame {
         // TODO add your handling code here:
         retriveIVN();
         allocatestock();
+        deductfromstock();
         fillcusttable();
     }//GEN-LAST:event_formWindowGainedFocus
 
