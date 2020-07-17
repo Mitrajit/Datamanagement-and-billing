@@ -6,25 +6,27 @@
 package mydbmanager;
 
 
+import com.toedter.calendar.JTextFieldDateEditor;
+import java.awt.EventQueue;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.design.JRDesignQuery;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.view.JasperViewer;
 import java.util.HashMap;
-import java.util.Map;
+import javax.swing.JFrame;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import net.sf.jasperreports.engine.data.JRTableModelDataSource;
 
 /**
@@ -51,6 +53,12 @@ public class ViewPurchase extends javax.swing.JFrame {
         }
         
     }
+    ArrayList<JFrame> frames;
+    public ViewPurchase(Connection con,ArrayList<JFrame> frm) {
+        initComponents();
+         conn=con;
+         frames=frm;
+    }
     public String Format(double a){
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMaximumFractionDigits(2);
@@ -68,7 +76,7 @@ public class ViewPurchase extends javax.swing.JFrame {
     {
         double total=0.0;
         int rowcount=jTable1.getSelectedRowCount();
-        System.out.println(rowcount);
+        //System.out.println(rowcount);
         if(rowcount==0){
             rowcount=jTable1.getRowCount();
             for(int i=0;i<rowcount;i++)
@@ -77,11 +85,35 @@ public class ViewPurchase extends javax.swing.JFrame {
         else
         { int rowind[]=jTable1.getSelectedRows();
             for(int i=0;i<rowcount;i++)
-            {System.out.println(rowind[i]);    
+            {//System.out.println(rowind[i]);    
              total+=Double.parseDouble(jTable1.getValueAt(rowind[i], 6).toString());}
         }
         jLabel4.setText(Format(total));
         
+    }
+    private void checkTable()
+    {
+        SimpleDateFormat dtformat= new SimpleDateFormat("dd-MM-yyyy");
+        dtformat.setLenient(false);
+        for (int i = 0; i < jTable1.getRowCount(); i++) {
+            String temp="";
+            try {
+                temp=(String) jTable1.getValueAt(i, 2);
+                  dtformat.parse(temp);
+            } catch (ParseException e) {jTable1.setValueAt(dtformat.format(new Date()), i, 2);}
+            try {
+                temp=(String) jTable1.getValueAt(i, 4);
+                jTable1.setValueAt(Format(Double.parseDouble(temp)), i, 4);
+            } catch (Exception e) {jTable1.setValueAt("0.00", i, 4);}
+            try {
+                temp=(String) jTable1.getValueAt(i, 6);
+                jTable1.setValueAt(Format(Double.parseDouble(temp)), i, 6);
+            } catch (Exception e) {jTable1.setValueAt("0.00", i, 6);}
+            try {
+                temp=(String) jTable1.getValueAt(i, 5)+" ";
+                jTable1.setValueAt(Double.parseDouble(temp.substring(0,temp.indexOf(" ")))+" KGS", i, 5);
+            } catch (Exception e) {jTable1.setValueAt("0.0 KGS", i, 5);}
+        }
     }
 
     /**
@@ -93,23 +125,34 @@ public class ViewPurchase extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         fromdate = new com.toedter.calendar.JDateChooser();
         todate = new com.toedter.calendar.JDateChooser();
-        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jRadioButton1 = new javax.swing.JRadioButton();
+        jRadioButton2 = new javax.swing.JRadioButton();
+        jRadioButton3 = new javax.swing.JRadioButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("View Purchase");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setIconImage(ScaleImage.scale("Billosoft.png", 16, 16).getImage());
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+            }
+        });
 
         jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -122,55 +165,23 @@ public class ViewPurchase extends javax.swing.JFrame {
             }
         });
 
+        fromdate.setDate(new Date());
         fromdate.setDateFormatString("dd-MMM-yyyy");
+        fromdate.setEnabled(false);
+        ((JTextFieldDateEditor)fromdate.getDateEditor()).setEditable(false);
 
+        todate.setDate(new Date());
         todate.setDateFormatString("dd-MMM-yyyy");
         todate.setDoubleBuffered(false);
+        todate.setEnabled(false);
+        ((JTextFieldDateEditor)todate.getDateEditor()).setEditable(false);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel1.setText("From:");
+        jLabel2.setText("to");
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel2.setText("To:");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 178, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(todate, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29))
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(48, 48, 48)
-                    .addComponent(fromdate, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(237, Short.MAX_VALUE)))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(40, 40, 40)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel2)
-                        .addComponent(jLabel1))
-                    .addComponent(todate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(40, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(40, 40, 40)
-                    .addComponent(fromdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(40, Short.MAX_VALUE)))
-        );
-
-        jPanel2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jPanel2MouseClicked(evt);
+        jButton2.setText("Print");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
             }
         });
 
@@ -181,38 +192,72 @@ public class ViewPurchase extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Print");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup1.add(jRadioButton1);
+        jRadioButton1.setSelected(true);
+        jRadioButton1.setText("Today");
+        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jRadioButton1ActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Cancel");
+        buttonGroup1.add(jRadioButton2);
+        jRadioButton2.setText("Yesterday");
+        jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton2ActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        buttonGroup1.add(jRadioButton3);
+        jRadioButton3.setText("Custom");
+        jRadioButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton3ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(jRadioButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jRadioButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioButton3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(fromdate, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(todate, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(38, 38, 38)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
-                .addContainerGap(39, Short.MAX_VALUE))
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton1)
+                        .addComponent(jButton2))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(todate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jRadioButton1)
+                            .addComponent(jRadioButton2)
+                            .addComponent(jRadioButton3))
+                        .addComponent(fromdate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(0, 14, Short.MAX_VALUE))
         );
-
-        jButton3.getAccessibleContext().setAccessibleName("Update");
 
         jPanel3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -242,22 +287,19 @@ public class ViewPurchase extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jTable1.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                jTable1FocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                jTable1FocusLost(evt);
-            }
-        });
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 jTable1MouseReleased(evt);
             }
         });
-        jTable1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                jTable1KeyReleased(evt);
+        jTable1.getDefaultEditor(String.class).addCellEditorListener(new CellEditorListener() {
+            public void editingCanceled(ChangeEvent e) {
+                System.out.println("The user canceled editing.");
+            }
+
+            public void editingStopped(ChangeEvent e) {
+                checkTable();
+                jLabel1.setVisible(true);
             }
         });
         jScrollPane1.setViewportView(jTable1);
@@ -272,97 +314,103 @@ public class ViewPurchase extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel3.setText("Total:");
 
+        jLabel1.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel1.setText("Replace current table with existing record");
+        jLabel1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel1.setVisible(false);
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel1MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 744, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addGap(36, 36, 36)
-                .addComponent(jLabel4)
-                .addGap(78, 78, 78))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel3)
+                        .addGap(36, 36, 36)
+                        .addComponent(jLabel4)
+                        .addGap(25, 25, 25))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel3))
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addGap(0, 0, 0)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE)
+                .addGap(10, 10, 10)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4)
+                        .addComponent(jLabel3)))
+                .addGap(20, 20, 20))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(127, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
         );
 
-        setSize(new java.awt.Dimension(907, 518));
+        setSize(new java.awt.Dimension(796, 474));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        display();
+    }//GEN-LAST:event_jButton1ActionPerformed
+    private void display()
+    {
         try{
             SimpleDateFormat dtfrmat=new SimpleDateFormat("yyyy-MM-dd");
             DefaultTableModel tm= (DefaultTableModel)jTable1.getModel();
             tm.setRowCount(0);
-            String sql="SELECT ID, Transportation, Date, Item_name, Rate, Quantity, Total FROM Item_List WHERE [Date] BETWEEN '" + dtfrmat.format(fromdate.getDate()) + "' AND '"+dtfrmat.format(todate.getDate())+"'";
-            System.out.println(dtfrmat.format(fromdate.getDate())+"   "+dtfrmat.format(todate.getDate()));
+            String sql="SELECT ID, Transportation, Date, Item_name, Rate, Quantity, Unit, Total FROM Item_List WHERE [Date] BETWEEN '" + dtfrmat.format(fromdate.getDate()) + "' AND '"+dtfrmat.format(todate.getDate())+"'";
+            //System.out.println(dtfrmat.format(fromdate.getDate())+"   "+dtfrmat.format(todate.getDate()));
             pst=conn.prepareStatement(sql);
             rs=pst.executeQuery();
             dtfrmat=new SimpleDateFormat("dd-MM-yyyy");
             while(rs.next())
             {
-                Object[] row={Format(rs.getInt("ID")),rs.getString("Transportation"),dtfrmat.format(rs.getDate("Date")),rs.getString("Item_name"),Format(rs.getDouble("Rate")),rs.getInt("Quantity"),Format(rs.getDouble("Total"))};
+                Object[] row={Format(rs.getInt("ID")),rs.getString("Transportation"),dtfrmat.format(rs.getDate("Date")),rs.getString("Item_name"),Format(rs.getDouble("Rate")),rs.getDouble("Quantity")+" "+rs.getString("unit"),Format(rs.getDouble("Total"))};
                 tm.addRow(row);
             }
 //            ResultSetMetaData rsmd=rs.getMetaData();
 //            System.out.println(rsmd.getColumnLabel(1)+"   "+rsmd.getColumnLabel(2)+"   "+rsmd.getColumnLabel(3)+"   "+rsmd.getColumnLabel(4)+"   "+
 //                    rsmd.getColumnLabel(5)+"   "+rsmd.getColumnLabel(6)+"   "+rsmd.getColumnLabel(7)+"\n"+rsmd.getColumnTypeName(1)+"\t"+rsmd.getColumnTypeName(2)+"\t"+rsmd.getColumnTypeName(3)+"\t"+rsmd.getColumnTypeName(4)+"\t"+rsmd.getColumnTypeName(5)+"\t"+rsmd.getColumnTypeName(6)+"\t"+rsmd.getColumnTypeName(7));
-              summation();
+            summation();
+            jLabel1.setVisible(false);
         }
         catch(Exception e)
-        {   System.out.println(e);
-            JOptionPane.showMessageDialog(null, e);}
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jTable1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseReleased
-        // TODO add your handling code here:
-        System.out.println("Executing");
-        summation();
-    }//GEN-LAST:event_jTable1MouseReleased
-
+        {   JOptionPane.showMessageDialog(null, e);}
+    }
     private void jScrollPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane1MouseClicked
         // TODO add your handling code here:
-        System.out.print("yes focus loosing");
+        //System.out.print("yes focus loosing");
         jTable1.getSelectionModel().clearSelection();
         summation();
         
@@ -378,46 +426,27 @@ public class ViewPurchase extends javax.swing.JFrame {
         summation();
     }//GEN-LAST:event_jPanel1MouseClicked
 
-    private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
-        // TODO add your handling code here:
-        jTable1.getSelectionModel().clearSelection();
-        summation();
-    }//GEN-LAST:event_jPanel2MouseClicked
-
     private void jPanel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel3MouseClicked
         // TODO add your handling code here:
         jTable1.getSelectionModel().clearSelection();
         summation();
     }//GEN-LAST:event_jPanel3MouseClicked
 
-    private void jTable1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTable1FocusGained
-        // TODO add your handling code here:
-
-        
-    }//GEN-LAST:event_jTable1FocusGained
-
-    private void jTable1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTable1FocusLost
-        // TODO add your handling code here
-    }//GEN-LAST:event_jTable1FocusLost
-
-    private void jTable1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyReleased
-        // TODO add your handling code here:
-        summation();
-    }//GEN-LAST:event_jTable1KeyReleased
-
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         
         try {
+            if(jTable1.getRowCount()==0)
+                return;
             DefaultTableModel dtm = (DefaultTableModel)jTable1.getModel();
             
             HashMap<String, Object> para= new HashMap<>();
-            para.put("title","");
-            JasperCompileManager.compileReportToFile("E:\\Data entry_Project\\MyDBmanager\\src\\mydbmanager\\Purchasereport.jrxml",
-                    "E:\\Data entry_Project\\MyDBmanager\\src\\mydbmanager\\Purchasereport.jasper");
-             JasperPrint  printing = (JasperPrint) JasperFillManager.fillReport("E:\\Data entry_Project\\MyDBmanager\\src\\mydbmanager"
-                     + "\\Purchasereport.jasper",para,new JRTableModelDataSource(dtm));
-            JasperViewer.viewReport(printing);
+            para.put("logo",LoginPage.class.getResource("logo final.png").toExternalForm().substring(6).replaceAll("%20", " "));
+            para.put("billosoft",LoginPage.class.getResource("Billosoft.png").toExternalForm().substring(6).replaceAll("%20", " "));
+            JasperCompileManager.compileReportToFile(LoginPage.class.getResource("Purchasereport.jrxml").toExternalForm().substring(6).replaceAll("%20", " "),
+                    LoginPage.class.getResource("Purchasereport.jasper").toExternalForm().substring(6).replaceAll("%20", " "));
+             JasperPrint  printing = (JasperPrint) JasperFillManager.fillReport(LoginPage.class.getResource("Purchasereport.jasper").toExternalForm().substring(6).replaceAll("%20", " "),para,new JRTableModelDataSource(dtm));
+            JasperViewer.viewReport(printing,false);
                 
 //            JasperDesign jasdi=JRXmlLoader.load("E:\\\\Data entry_Project\\\\MyDBmanager\\\\src\\\\mydbmanager\\\\Purchasereport.jrxml");
 //            String sql="SELECT ID, Transportation, Date, Item_name, Rate, Quantity, Total FROM Item_List";
@@ -428,9 +457,64 @@ public class ViewPurchase extends javax.swing.JFrame {
 //            JasperPrint jp=JasperFillManager.fillReport(js,null,conn);
 //            JasperViewer.viewReport(jp,false);
         } catch (Exception e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(rootPane, e);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+    Date dt=new Date();
+    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+        // TODO add your handling code here:
+        fromdate.setEnabled(false);
+        fromdate.setDate(dt);
+        todate.setEnabled(false);
+        todate.setDate(dt);
+    }//GEN-LAST:event_jRadioButton1ActionPerformed
+
+    private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
+        // TODO add your handling code here:
+        fromdate.setEnabled(false);
+        fromdate.setDate(new Date(dt.getYear(), dt.getMonth(), dt.getDate()-1));
+        todate.setEnabled(false);
+        todate.setDate(new Date(dt.getYear(), dt.getMonth(), dt.getDate()-1));
+    }//GEN-LAST:event_jRadioButton2ActionPerformed
+
+    private void jRadioButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton3ActionPerformed
+        // TODO add your handling code here:
+        fromdate.setEnabled(true);
+        fromdate.setDate(new Date(dt.getYear(), dt.getMonth()-1, dt.getDate()));
+        todate.setEnabled(true);
+        todate.setDate(dt);
+    }//GEN-LAST:event_jRadioButton3ActionPerformed
+
+    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if(JOptionPane.showConfirmDialog(null, "The database will be replaced by the current table.\nDoyou want to continue?")==0)
+                    try{
+                        SimpleDateFormat dtfrmat=new SimpleDateFormat("yyyy-MM-dd");
+                        SimpleDateFormat dtfrmat2=new SimpleDateFormat("dd-MM-yyyy");
+                        
+                    for (int i = 0; i < jTable1.getRowCount(); i++) {
+                        conn.prepareStatement("UPDATE Item_List SET Transportation='"+jTable1.getValueAt(i, 1)+"', Date='"+dtfrmat.format(dtfrmat2.parse(jTable1.getValueAt(i, 2).toString()))+"', Item_name='"+jTable1.getValueAt(i, 3)+"', Rate='"+Double.valueOf(jTable1.getValueAt(i, 4).toString())+"', Quantity='"+Double.parseDouble(jTable1.getValueAt(i, 5).toString().substring(0, jTable1.getValueAt(i, 5).toString().indexOf(' ')))+"', Unit='KGS', Total='"+Double.parseDouble(jTable1.getValueAt(i, 6).toString())+"' WHERE ID='"+Integer.parseInt(jTable1.getValueAt(i, 0).toString())+"'").executeUpdate();
+                    }
+                    }catch(Exception e){e.printStackTrace();}
+            }
+        });
+    }//GEN-LAST:event_jLabel1MouseClicked
+
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        // TODO add your handling code here:
+        if(frames.remove(this))
+            frames.add(this);
+        else
+            frames.add(this);
+        display();
+    }//GEN-LAST:event_formWindowGainedFocus
+
+    private void jTable1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseReleased
+        summation();
+    }//GEN-LAST:event_jTable1MouseReleased
 
     /**
      * @param args the command line arguments
@@ -468,17 +552,19 @@ public class ViewPurchase extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
     private com.toedter.calendar.JDateChooser fromdate;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JRadioButton jRadioButton2;
+    private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private com.toedter.calendar.JDateChooser todate;

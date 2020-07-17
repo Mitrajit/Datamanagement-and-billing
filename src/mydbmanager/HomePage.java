@@ -5,9 +5,20 @@
  */
 package mydbmanager;
 
-import java.awt.Toolkit;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.EventQueue;
+import java.awt.Frame;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.WindowConstants;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
 
 /**
  *
@@ -19,13 +30,46 @@ public class HomePage extends javax.swing.JFrame {
      * Creates new form HomePage
      */
     
-    
+    Connection conn=null;
+    PreparedStatement pst=null;
+    ResultSet rs=null;
     public HomePage() {
+        UIManager.put("nimbusBase",new Color(51,98,140));
+        UIManager.put("nimbusBlueGrey", new Color(169,176,190));
+        UIManager.put("TextField[Disabled].backgroundPainter", new FillPainter(new Color(214,217,223)));
+        UIManager.put("TextField.disabled", new Color(214,217,223));
         initComponents();
-        Toolkit tk=Toolkit.getDefaultToolkit();
-        this.setSize((int) tk.getScreenSize().getWidth(), (int) tk.getScreenSize().getHeight());//setting maximised view
+        try{
+            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+            conn=DriverManager.getConnection("jdbc:ucanaccess://E:\\Data entry_Project\\Mydb.accdb");
+            viewinv=new Viewinv(conn,sell,frames);
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, "Problem in connection");
+        }
+        //AWTUtilities.setWindowOpacity(this, 0.7f);
+        //Toolkit tk=Toolkit.getDefaultToolkit();
+        //this.setSize((int) tk.getScreenSize().getWidth(), (int) tk.getScreenSize().getHeight());//setting maximised view
     }
-
+    ArrayList<JFrame> frames= new ArrayList<>();
+    public HomePage(Connection con){
+        UIManager.put("nimbusBase",new Color(51,98,140));
+        UIManager.put("nimbusBlueGrey", new Color(169,176,190));
+        initComponents();
+        conn=con;
+        
+        vp= new ViewPurchase(conn, frames);
+        inputpurchase=new InputPurchase(conn,frames);
+        sell=new Sell(conn,frames);
+        viewinv=new Viewinv(conn,sell,frames);
+        stkentry=new StockEntry(conn,frames);
+        custprof=new CustomerProfile(conn,sell,frames);
+        io=new InputOutput(conn,frames);
+        pnl= new ProfitnLoss(conn,frames);
+        fndstk = new FindStock(conn,frames);
+        custled= new CustomerLedger(conn,frames);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -35,14 +79,26 @@ public class HomePage extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel2 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu5 = new javax.swing.JMenu();
+        jMenuItem27 = new javax.swing.JMenuItem();
+        jMenuItem31 = new javax.swing.JMenuItem();
+        jMenuItem29 = new javax.swing.JMenuItem();
+        jMenuItem30 = new javax.swing.JMenuItem();
         jMenu10 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
-        jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem13 = new javax.swing.JMenuItem();
+        jMenuItem23 = new javax.swing.JMenuItem();
+        jMenuItem22 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem25 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
         jMenuItem6 = new javax.swing.JMenuItem();
@@ -53,21 +109,105 @@ public class HomePage extends javax.swing.JFrame {
         jMenuItem10 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Home page - Billosoft");
+        setExtendedState(MAXIMIZED_BOTH);
+        setIconImage(ScaleImage.scale("Billosoft.png", 16, 16).getImage());
+
+        jPanel2.setBackground(new java.awt.Color(56, 79, 142));
+
+        jLabel3.setFont(new java.awt.Font("Trajan Pro", 0, 24)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel3.setText("MUkherjee Enterprise");
+
+        jLabel4.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel4.setText("By Billosoft");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 349, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addGap(20, 20, 20))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+                .addGap(11, 11, 11))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addContainerGap())
+        );
+
+        jPanel1.setToolTipText("Click to get all windows at front");
+        jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel1MouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 564, Short.MAX_VALUE)
+            .addGap(0, 754, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 341, Short.MAX_VALUE)
+            .addGap(0, 363, Short.MAX_VALUE)
         );
+
+        jMenu5.setText("Client");
+
+        jMenuItem27.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, 0));
+        jMenuItem27.setText("Client profile");
+        jMenuItem27.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem27ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(jMenuItem27);
+
+        jMenuItem31.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.SHIFT_MASK));
+        jMenuItem31.setText("Client search");
+        jMenuItem31.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem31ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(jMenuItem31);
+
+        jMenuItem29.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem29.setText("Payment history");
+        jMenuItem29.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem29ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(jMenuItem29);
+
+        jMenuItem30.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem30.setText("Client invoices");
+        jMenuItem30.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem30ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(jMenuItem30);
+
+        jMenuBar1.add(jMenu5);
 
         jMenu10.setText("Purchase");
 
-        jMenuItem1.setText("Item Purchase");
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, 0));
+        jMenuItem1.setText("Purchase bill");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
@@ -75,7 +215,8 @@ public class HomePage extends javax.swing.JFrame {
         });
         jMenu10.add(jMenuItem1);
 
-        jMenuItem2.setText("View Purchase");
+        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem2.setText("View purchase");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem2ActionPerformed(evt);
@@ -87,10 +228,8 @@ public class HomePage extends javax.swing.JFrame {
 
         jMenu3.setText("Sales");
 
-        jMenuItem3.setText("Customer Profile");
-        jMenu3.add(jMenuItem3);
-
-        jMenuItem4.setText("Sell");
+        jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, 0));
+        jMenuItem4.setText("Sell POS");
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem4ActionPerformed(evt);
@@ -98,11 +237,57 @@ public class HomePage extends javax.swing.JFrame {
         });
         jMenu3.add(jMenuItem4);
 
+        jMenuItem13.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, 0));
+        jMenuItem13.setText("Payment");
+        jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem13ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem13);
+
+        jMenuItem23.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.SHIFT_MASK));
+        jMenuItem23.setText("Find invoice");
+        jMenuItem23.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem23ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem23);
+
+        jMenuItem22.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.ALT_MASK));
+        jMenuItem22.setText("View Invoices");
+        jMenuItem22.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem22ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem22);
+
+        jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.ALT_MASK));
+        jMenuItem3.setText("View item wise sale");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem3);
+
+        jMenuItem25.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.ALT_MASK));
+        jMenuItem25.setText("View payment");
+        jMenuItem25.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem25ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem25);
+
         jMenuBar1.add(jMenu3);
 
         jMenu1.setText("Stock");
 
-        jMenuItem5.setText("Stock entry");
+        jMenuItem5.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, 0));
+        jMenuItem5.setText("Item entry");
         jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem5ActionPerformed(evt);
@@ -110,23 +295,53 @@ public class HomePage extends javax.swing.JFrame {
         });
         jMenu1.add(jMenuItem5);
 
-        jMenuItem6.setText("Find Stock");
+        jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK));
+        jMenuItem6.setText("Find item");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem6);
 
-        jMenuItem7.setText("Stock update");
+        jMenuItem7.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, 0));
+        jMenuItem7.setText("Stock management");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem7);
 
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Accounts");
 
+        jMenuItem8.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.SHIFT_MASK));
         jMenuItem8.setText("Input/Output");
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem8ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem8);
 
+        jMenuItem9.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.SHIFT_MASK));
         jMenuItem9.setText("Profit and loss");
+        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem9ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem9);
 
+        jMenuItem10.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.SHIFT_MASK));
         jMenuItem10.setText("Customer Ledger");
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem10);
 
         jMenuBar1.add(jMenu2);
@@ -137,35 +352,243 @@ public class HomePage extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        pack();
+        setSize(new java.awt.Dimension(770, 473));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
+ViewPurchase vp= null;
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         // TODO add your handling code here:
+        if(!vp.isVisible())
+        vp.setVisible(true);
+        else if(vp.getState()==Frame.ICONIFIED)
+            vp.setState(Frame.NORMAL);
+        else
+            vp.requestFocus();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
-
+InputPurchase inputpurchase= null;
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
-        InputPurchase ob= new InputPurchase();
-        ob.setVisible(true);
-        ob.pack();
-        //ob.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+       if(!inputpurchase.isVisible())
+        inputpurchase.setVisible(true);
+        else if(inputpurchase.getState()==Frame.ICONIFIED)
+            inputpurchase.setState(Frame.NORMAL);
+        else
+            inputpurchase.requestFocus();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
-
+Sell sell=null;
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         // TODO add your handling code here:
+        sell.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        if(!sell.isVisible())
+        sell.setVisible(true);
+        else if(sell.getState()==Frame.ICONIFIED)
+            sell.setState(Frame.NORMAL);
+        else
+            sell.requestFocus();
+        sell.jTabbedPane1.setSelectedIndex(0);
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         // TODO add your handling code here:
+        if(!stkentry.isVisible()||stkentry.getTitle().equals("Stock management"))
+        {stkentry.reset();
+        stkentry.add.setEnabled(true);
+        stkentry.setTitle("Add stock");
+        stkentry.add.setText("Add item to existing");
+        stkentry.delete.setVisible(false);
+        stkentry.update.setVisible(false);}
+        if(!stkentry.isVisible())
+        stkentry.setVisible(true);
+        else if(stkentry.getState()==Frame.ICONIFIED)
+            stkentry.setState(Frame.NORMAL);
+        else
+            stkentry.requestFocus();
     }//GEN-LAST:event_jMenuItem5ActionPerformed
+StockEntry stkentry=null;
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        if(!stkentry.isVisible()||stkentry.getTitle().equals("Add stock"))
+        {stkentry.reset();
+        stkentry.setTitle("Stock management");
+        stkentry.add.setText("Add Item");
+        stkentry.delete.setVisible(true);
+        stkentry.update.setVisible(true);
+        stkentry.delete.setEnabled(false);
+        stkentry.update.setEnabled(false);
+        stkentry.add.setEnabled(true);}
+        if(!stkentry.isVisible())
+        stkentry.setVisible(true);
+        else if(stkentry.getState()==Frame.ICONIFIED)
+            stkentry.setState(Frame.NORMAL);
+        else
+            stkentry.requestFocus();
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
+    FindStock fndstk = null;
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        if(!fndstk.isVisible())
+            fndstk.setVisible(true);
+        else if(fndstk.getState()==Frame.ICONIFIED)
+            fndstk.setState(Frame.NORMAL);
+        else
+            fndstk.requestFocus();
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
+Viewinv viewinv = null;
+    private void jMenuItem22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem22ActionPerformed
+        // TODO add your handling code here:
+        if(!viewinv.isVisible())
+        viewinv.setVisible(true);
+        else if(viewinv.getState()==Frame.ICONIFIED)
+            viewinv.setState(Frame.NORMAL);
+        else
+            viewinv.requestFocus();
+        viewinv.jTabbedPane1.setSelectedIndex(0);
+    }//GEN-LAST:event_jMenuItem22ActionPerformed
+CustomerProfile custprof=null;
+    private void jMenuItem27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem27ActionPerformed
+        // TODO add your handling code here:
+        custprof.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        if(!custprof.isVisible())
+        custprof.setVisible(true);
+        else if(custprof.getState()==Frame.ICONIFIED)
+            custprof.setState(Frame.NORMAL);
+        else
+            custprof.requestFocus();
+        custprof.jTabbedPane1.setSelectedIndex(0);
+    }//GEN-LAST:event_jMenuItem27ActionPerformed
+InputOutput io=null;
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        // TODO add your handling code here:
+       io.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        if(!io.isVisible())
+        io.setVisible(true);
+        else if(io.getState()==Frame.ICONIFIED)
+            io.setState(Frame.NORMAL);
+        else
+            io.requestFocus();
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
+ProfitnLoss pnl=null;
+    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+        // TODO add your handling code here:
+        pnl.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        if(!pnl.isVisible())
+        pnl.setVisible(true);
+        else if(pnl.getState()==Frame.ICONIFIED)
+            pnl.setState(Frame.NORMAL);
+        else
+            pnl.requestFocus();
+    }//GEN-LAST:event_jMenuItem9ActionPerformed
+
+    private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
+        // TODO add your handling code here:
+        sell.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        if(!sell.isVisible())
+        sell.setVisible(true);
+        else if(sell.getState()==Frame.ICONIFIED)
+            sell.setState(Frame.NORMAL);
+        else
+            sell.requestFocus();
+        sell.jTabbedPane1.setSelectedIndex(1);
+    }//GEN-LAST:event_jMenuItem13ActionPerformed
+    private void openclientsec(){
+        try {
+            rs=conn.prepareStatement("SELECT * FROM CustomerProfile").executeQuery();
+            int c=0;
+            while(rs.next())c++;
+            Object[] names=new Object[c];
+            rs=conn.prepareStatement("SELECT * FROM CustomerProfile").executeQuery();
+            for(c=0;rs.next();c++)
+            names[c]=rs.getString("Customer_name");
+        custprof.name.setText(JOptionPane.showInputDialog(this, "Enter the name", "Search", JOptionPane.QUESTION_MESSAGE, null, names, null).toString());
+        custprof.filldetails();
+        if(!custprof.isVisible())
+            custprof.setVisible(true);
+        else if(custprof.getState()==Frame.ICONIFIED)
+            custprof.setState(Frame.NORMAL);
+        else
+            custprof.requestFocus();
+        }catch(NullPointerException e){} 
+        catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex);
+        }
+    }
+    private void jMenuItem31ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem31ActionPerformed
+        openclientsec();
+        custprof.jTabbedPane1.setSelectedIndex(0);
+    }//GEN-LAST:event_jMenuItem31ActionPerformed
+
+    private void jMenuItem29ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem29ActionPerformed
+        // TODO add your handling code here:
+        openclientsec();
+        custprof.jTabbedPane1.setSelectedIndex(2);
+    }//GEN-LAST:event_jMenuItem29ActionPerformed
+
+    private void jMenuItem30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem30ActionPerformed
+        openclientsec();
+        custprof.jTabbedPane1.setSelectedIndex(1);
+    }//GEN-LAST:event_jMenuItem30ActionPerformed
+
+    private void jMenuItem23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem23ActionPerformed
+        sell.findprotocol();
+        sell.jTabbedPane1.setSelectedIndex(0);
+        if(!sell.isVisible())
+            sell.setVisible(true);
+        else if(sell.getState()==Frame.ICONIFIED)
+            sell.setState(Frame.NORMAL);
+        else
+            sell.requestFocus();
+    }//GEN-LAST:event_jMenuItem23ActionPerformed
+CustomerLedger custled;
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        if(!custled.isVisible())
+            custled.setVisible(true);
+        else if(custled.getState()==Frame.ICONIFIED)
+            custled.setState(Frame.NORMAL);
+        else
+            custled.requestFocus();
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
+
+    private void jMenuItem25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem25ActionPerformed
+        // TODO add your handling code here:
+        io.showwhat.setSelectedItem("Input");
+        if(!io.isVisible())
+            io.setVisible(true);
+        else if(io.getState()==Frame.ICONIFIED)
+            io.setState(Frame.NORMAL);
+        else
+            io.requestFocus();
+    }//GEN-LAST:event_jMenuItem25ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        if(!viewinv.isVisible())
+        viewinv.setVisible(true);
+        else if(viewinv.getState()==Frame.ICONIFIED)
+            viewinv.setState(Frame.NORMAL);
+        else
+            viewinv.requestFocus();
+        viewinv.jTabbedPane1.setSelectedIndex(1);
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                for(JFrame frm:frames)
+                    frm.toFront();
+            }
+        });
+        
+    }//GEN-LAST:event_jPanel1MouseClicked
 
     /**
      * @param args the command line arguments
@@ -203,15 +626,26 @@ public class HomePage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu10;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
+    private javax.swing.JMenuItem jMenuItem13;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem22;
+    private javax.swing.JMenuItem jMenuItem23;
+    private javax.swing.JMenuItem jMenuItem25;
+    private javax.swing.JMenuItem jMenuItem27;
+    private javax.swing.JMenuItem jMenuItem29;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem30;
+    private javax.swing.JMenuItem jMenuItem31;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
@@ -219,5 +653,6 @@ public class HomePage extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
 }

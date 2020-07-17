@@ -5,8 +5,10 @@
  */
 package mydbmanager;
 
+import com.toedter.calendar.JTextFieldDateEditor;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Frame;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,6 +18,7 @@ import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -44,7 +47,14 @@ public class CustomerProfile extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Problem in connection");
         }
     }
-
+    ArrayList<JFrame> frames;
+    Sell sell;
+    public CustomerProfile(Connection con,Sell sel,ArrayList<JFrame> frm) {
+        initComponents();
+        conn=con;
+        sell=sel;
+        frames=frm;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -122,7 +132,9 @@ public class CustomerProfile extends javax.swing.JFrame {
 
         jTextField8.setText("jTextField8");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Customer Profile");
+        setIconImage(ScaleImage.scale("Billosoft.png", 16, 16).getImage());
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -148,6 +160,12 @@ public class CustomerProfile extends javax.swing.JFrame {
         type.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 typeActionPerformed(evt);
+            }
+        });
+
+        phone.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                phoneFocusLost(evt);
             }
         });
 
@@ -191,6 +209,11 @@ public class CustomerProfile extends javax.swing.JFrame {
 
         jLabel11.setText("Credit limit");
 
+        name.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                nameFocusLost(evt);
+            }
+        });
         name.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 nameKeyPressed(evt);
@@ -198,6 +221,8 @@ public class CustomerProfile extends javax.swing.JFrame {
         });
 
         dob.setToolTipText("");
+        dob.setFocusable(false);
+        ((JTextFieldDateEditor)dob.getDateEditor()).setEditable(false);
 
         jLabel13.setText("Date of birth");
 
@@ -338,6 +363,11 @@ public class CustomerProfile extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        invtab.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                invtabMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(invtab);
         if (invtab.getColumnModel().getColumnCount() > 0) {
             invtab.getColumnModel().getColumn(0).setPreferredWidth(10);
@@ -407,21 +437,34 @@ public class CustomerProfile extends javax.swing.JFrame {
         amountsoldlabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         amountsoldlabel.setText(" ");
 
+        amtsold.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         amtsold.setText(" ");
 
         amountpaidlabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         amountpaidlabel.setText(" ");
 
+        amtpaid.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         amtpaid.setText(" ");
 
         amountduelabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         amountduelabel.setText(" ");
 
+        amtdue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         amtdue.setText(" ");
 
         jButton1.setText("New invoice");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Payment");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -555,6 +598,10 @@ public class CustomerProfile extends javax.swing.JFrame {
         nf.setMinimumIntegerDigits(4);
         nf.setGroupingUsed(false);
         return nf.format(a);
+    }
+      public String quantifier(int quantity)
+    {
+        return ((quantity/12)+"DOZ - "+(quantity-(quantity/12)*12)+"PCS");
     }
       SimpleDateFormat dtfrmat=new SimpleDateFormat("dd-MM-yyyy");
      private void fillinvoicetab()
@@ -780,7 +827,91 @@ public class CustomerProfile extends javax.swing.JFrame {
         else if(jTabbedPane1.getSelectedIndex()==2)
             fillpaytab();
         filldetails();
+        if(frames.remove(this))
+            frames.add(this);
+        else
+            frames.add(this);
     }//GEN-LAST:event_formWindowGainedFocus
+
+    private void nameFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nameFocusLost
+        filldetails();
+    }//GEN-LAST:event_nameFocusLost
+
+    private void invtabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_invtabMouseClicked
+        EventQueue.invokeLater(new Runnable() {
+           @Override
+           public void run() {
+       int selection=invtab.getSelectedRow();
+       if(evt.getClickCount()==2&&!evt.isConsumed())
+        {   evt.consume();
+        if(!invtab.getValueAt(selection, 0).equals("")){
+            sell.ivno.setText((String) invtab.getValueAt(selection, 1));
+            sell.findinv();
+            if(!sell.isVisible())
+            sell.setVisible(true);
+            else if(sell.getState()==Frame.ICONIFIED)
+            sell.setState(Frame.NORMAL);
+             else
+            sell.requestFocus();
+            }
+        }
+       else if(evt.getClickCount()==1&&!evt.isConsumed())
+       {
+           try{
+               evt.consume();
+           
+           DefaultTableModel tm= (DefaultTableModel) invtab.getModel();
+           
+           if(selection==invtab.getRowCount()-1||!invtab.getValueAt(selection+1, 0).toString().equals("")){
+               if(!invtab.getValueAt(selection, 0).equals("")){
+           rs=conn.prepareStatement("SELECT * FROM Sell WHERE Invoice_no='"+invtab.getValueAt(selection, 1)+"'").executeQuery();
+           while(rs.next()){
+//               if(last)
+//                   tm.addRow(new Object[]{"",rs.getString("Item"),Format(rs.getDouble("Rate")),quantifier(rs.getInt("Quantity")),Format(rs.getDouble("Total"))});
+//               else
+               tm.insertRow(++selection, new Object[]{"",rs.getString("Item"),Format(rs.getDouble("Rate"))+"    "+quantifier(rs.getInt("Quantity")),Format(rs.getDouble("Total"))});
+           }}}
+           else
+           {
+               if(!invtab.getValueAt(selection, 0).equals("")){
+               while(selection!=invtab.getRowCount()-1&&invtab.getValueAt(selection+1, 0).equals(""))
+                   tm.removeRow(selection+1);}
+           }
+       }catch(Exception e){JOptionPane.showMessageDialog(null, e);}
+       }
+           }
+       });
+    }//GEN-LAST:event_invtabMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        sell.custname.setText(name.getText());
+        sell.filldetails();
+        sell.jTabbedPane1.setSelectedIndex(0);
+        if(!sell.isVisible())
+            sell.setVisible(true);
+        else if(sell.getState()==Frame.ICONIFIED)
+            sell.setState(Frame.NORMAL);
+        else
+            sell.requestFocus();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        sell.custname2.setText(name.getText());
+        sell.fillpaydetails();
+        sell.jTabbedPane1.setSelectedIndex(1);
+        if(!sell.isVisible())
+            sell.setVisible(true);
+        else if(sell.getState()==Frame.ICONIFIED)
+            sell.setState(Frame.NORMAL);
+        else
+            sell.requestFocus();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void phoneFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_phoneFocusLost
+       if(phone.getText().length()!=10)
+           JOptionPane.showMessageDialog(this, "The phone number doesn't contain 10 digits");
+    }//GEN-LAST:event_phoneFocusLost
 
     //The Functions
     private void allocate(String column)
@@ -893,11 +1024,11 @@ public class CustomerProfile extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    public javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField8;
-    private javax.swing.JTextField name;
+    public javax.swing.JTextField name;
     private javax.swing.JTable paytab;
     private javax.swing.JTextField phone;
     private javax.swing.JTextField pin;

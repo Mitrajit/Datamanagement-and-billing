@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="68f67426-8c06-40ff-83d3-5219d9f84787">
-	<property name="ireport.zoom" value="1.464100000000018"/>
+	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="323"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="paymode" class="java.lang.String"/>
 	<parameter name="txn" class="java.lang.String"/>
 	<parameter name="amtpaid" class="java.lang.String"/>
@@ -15,6 +15,8 @@
 	<parameter name="Company" class="java.lang.String"/>
 	<parameter name="payno" class="java.lang.String"/>
 	<parameter name="date" class="java.lang.String"/>
+	<parameter name="logo" class="java.lang.String"/>
+	<parameter name="billosoft" class="java.lang.String"/>
 	<filterExpression><![CDATA[new Boolean(true)]]></filterExpression>
 	<background>
 		<band splitType="Stretch"/>
@@ -96,11 +98,11 @@
 				<reportElement x="555" y="268" width="1" height="64" forecolor="#564B35" uuid="b79f4c1d-6b84-4107-b7b5-65551b55bad5"/>
 			</line>
 			<staticText>
-				<reportElement x="304" y="6" width="236" height="40" uuid="eb8658d9-470d-4f28-b694-44781d71511d"/>
-				<textElement verticalAlignment="Top">
-					<font size="30" isBold="true"/>
+				<reportElement x="355" y="6" width="185" height="84" uuid="eb8658d9-470d-4f28-b694-44781d71511d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="23" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Payment recipt]]></text>
+				<text><![CDATA[Payment receipt]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="2" y="109" width="353" height="20" forecolor="#564B35" backcolor="#F2EBDF" uuid="a6a2bc3e-b8b6-4052-8774-4db4b4b30556"/>
@@ -122,34 +124,6 @@
 					<font fontName="Tahoma" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[DATE]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="136" y="12" width="131" height="22" uuid="51e56a07-c0ed-4e15-aa2e-3fcf30a3081e"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="18"/>
-				</textElement>
-				<text><![CDATA[COMPANY NAME]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="20" y="37" width="100" height="14" uuid="08bf8889-722f-404a-8209-88c08d8cdf43"/>
-				<textElement verticalAlignment="Middle">
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Address]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="20" y="51" width="100" height="14" uuid="fc9a0947-0c34-4b31-9707-6181a28ad2b9"/>
-				<textElement verticalAlignment="Middle">
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Phone no]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="20" y="65" width="100" height="14" uuid="46965dfa-36f0-4401-be39-4a0301ec227c"/>
-				<textElement verticalAlignment="Middle">
-					<font size="11"/>
-				</textElement>
-				<text><![CDATA[Email ID]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="12" y="129" width="343" height="20" uuid="c2963fd4-0d6f-4b2d-87ec-3f5a0f8e0256"/>
@@ -213,6 +187,49 @@
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Seal. Authorised signature]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="364" width="152" height="20" uuid="80321bed-d57f-431a-bcbc-efa3918fe0b5"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Generated in Billosoft]]></text>
+			</staticText>
+			<image>
+				<reportElement x="154" y="364" width="9" height="18" uuid="73dc93b4-a975-4bac-bebb-c15aaeddb0c4"/>
+				<imageExpression><![CDATA[$P{billosoft}]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="0" y="0" width="96" height="94" uuid="a41035ce-88de-411c-bab2-01c83d0ca2ea"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="96" y="48" width="238" height="14" uuid="b1fd4acc-f716-49b4-aefb-b5840f828bf2"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<text><![CDATA[Vill+P.O-Sarisha P.S-Diamond Harbour]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="96" y="80" width="238" height="14" uuid="263355eb-0c88-4ad7-9a27-a48bd94068d4"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<text><![CDATA[Mob. No.- 9046356049 / 9064289481]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="96" y="64" width="238" height="14" uuid="80ea2ae4-0c58-405a-9522-4ebfbea982e3"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<text><![CDATA[South 24 parganas - 743368]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="96" y="11" width="238" height="29" forecolor="#736343" uuid="62369576-2412-49b0-8008-50a0b1641d82"/>
+				<textElement>
+					<font fontName="Trajan Pro" size="18"/>
+				</textElement>
+				<text><![CDATA[Mukherjee Enterprise]]></text>
 			</staticText>
 		</band>
 	</pageHeader>

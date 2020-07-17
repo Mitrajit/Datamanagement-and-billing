@@ -11,7 +11,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import javafx.scene.input.KeyCode;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -38,7 +40,12 @@ public class FindStock extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Problem in connection");
         }
     }
-
+    ArrayList<JFrame> frames=null;
+    public FindStock(Connection con,ArrayList<JFrame> frm) {
+        initComponents();
+        conn=con;
+        frames=frm;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -52,8 +59,9 @@ public class FindStock extends javax.swing.JFrame {
         stocktable = new javax.swing.JTable();
         searchtext = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Find Stock");
+        setIconImage(ScaleImage.scale("Billosoft.png", 16, 16).getImage());
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -173,6 +181,10 @@ public class FindStock extends javax.swing.JFrame {
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
         // TODO add your handling code here:
         fillstocktable();
+        if(frames.remove(this))
+            frames.add(this);
+        else
+            frames.add(this);
     }//GEN-LAST:event_formWindowGainedFocus
 
     /**

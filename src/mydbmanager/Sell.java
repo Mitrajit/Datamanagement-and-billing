@@ -5,6 +5,8 @@
  */
 package mydbmanager;
 
+import com.toedter.calendar.JTextFieldDateEditor;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
@@ -19,7 +21,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 import javax.security.auth.callback.ConfirmationCallback;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -61,7 +65,13 @@ public class Sell extends javax.swing.JFrame {
         }
         
     }
-    
+    ArrayList<JFrame> frames;
+    public Sell(Connection con,ArrayList<JFrame> frm) {
+//        UIManager.put("TextField[Disabled].backgroundPainter", new FillPainter(new Color(214,217,223)));
+        initComponents();
+         conn=con;
+         frames=frm;
+    }
     private void allocatestock(){
         try
         {
@@ -303,6 +313,12 @@ public class Sell extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, e);
         }
     }
+        public void findprotocol(){
+        add.setEnabled(false);
+        delete.setEnabled(false);
+        confirm.setEnabled(false);
+        print.setSelected(false);
+        }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -395,7 +411,9 @@ public class Sell extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Sales and payment");
+        setIconImage(ScaleImage.scale("Billosoft.png", 16, 16).getImage());
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -424,6 +442,7 @@ public class Sell extends javax.swing.JFrame {
 
         date.setDate(dt);
         date.setDateFormatString("dd-MM- yyyy");
+        ((JTextFieldDateEditor)date.getDateEditor()).setEditable(false);
 
         add.setText("Add");
         add.addActionListener(new java.awt.event.ActionListener() {
@@ -855,11 +874,6 @@ public class Sell extends javax.swing.JFrame {
                 custname2FocusLost(evt);
             }
         });
-        custname2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                custname2ActionPerformed(evt);
-            }
-        });
         custname2.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 custname2KeyPressed(evt);
@@ -884,6 +898,7 @@ public class Sell extends javax.swing.JFrame {
 
         date1.setDate(dt);
         date1.setDateFormatString("dd-MM- yyyy");
+        ((JTextFieldDateEditor)date1.getDateEditor()).setEditable(false);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -1156,7 +1171,7 @@ public class Sell extends javax.swing.JFrame {
                         for(int i=0;i<itemtable.getRowCount();i++){
                             sql="INSERT INTO Sell (Invoice_no,[Date],Customer_name,Address,City_town,Item,Rate,Cost_price,Quantity,Unit,Total,Discount) VALUES ('"+IVN+"','"+
                             dtfrmat.format(date.getDate())+"','"+custname.getText()+"','"+address.getText()+"','"+city.getText()+"','"+
-                            itemtable.getValueAt(i, 1).toString()+"','"+Double.parseDouble(itemtable.getValueAt(i, 2).toString())+"','"+costprice.get(itemtable.getValueAt(i, 1))+"','"+
+                            itemtable.getValueAt(i, 1).toString()+"','"+Double.parseDouble(itemtable.getValueAt(i, 2).toString())+"','"+costprice.get(itemtable.getValueAt(i, 1))*quantifier(itemtable.getValueAt(i, 3).toString())/12d+"','"+
                             quantifier(itemtable.getValueAt(i, 3).toString())+"','"+
                             "PCS"+"','"+            itemtable.getValueAt(i, 4)+"','"+discpercent.getText()+"')";
                             pst=conn.prepareStatement(sql);
@@ -1217,10 +1232,9 @@ public class Sell extends javax.swing.JFrame {
         table.setRowCount(0);
         date.setDate(dt);
     }//GEN-LAST:event_clearActionPerformed
-
-    private void findinvoiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findinvoiceActionPerformed
-        // TODO add your handling code here:
-        try {
+public void findinv()
+{
+    try {
             boolean gotname=true;
             String sql="SELECT * FROM Sell WHERE Invoice_no='"+Integer.parseInt(ivno.getText())+"'";
             pst=conn.prepareStatement(sql);
@@ -1281,6 +1295,10 @@ public class Sell extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
+}
+    private void findinvoiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findinvoiceActionPerformed
+        // TODO add your handling code here:
+        findinv();
     }//GEN-LAST:event_findinvoiceActionPerformed
 
     private void printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printActionPerformed
@@ -1311,11 +1329,12 @@ public class Sell extends javax.swing.JFrame {
             para.put("Invoice_no", ivno.getText());
             SimpleDateFormat dtfrmat=new SimpleDateFormat("dd-MM-yyyy");
             para.put("Date", dtfrmat.format(date.getDate()));
+            para.put("logo",LoginPage.class.getResource("logo final.png").toExternalForm().substring(6).replaceAll("%20", " "));
+            para.put("billosoft",LoginPage.class.getResource("Billosoft.png").toExternalForm().substring(6).replaceAll("%20", " "));
             try{
-            JasperCompileManager.compileReportToFile("E:\\Data entry_Project\\MyDBmanager\\src\\mydbmanager\\Invoice.jrxml",
-                    "E:\\Data entry_Project\\MyDBmanager\\src\\mydbmanager\\Invoice.jasper");
-             JasperPrint  printing = (JasperPrint) JasperFillManager.fillReport("E:\\Data entry_Project\\MyDBmanager\\src\\mydbmanager"
-                     + "\\Invoice.jasper",para,new JRTableModelDataSource(dtm2));
+            JasperCompileManager.compileReportToFile(LoginPage.class.getResource("Invoice.jrxml").toExternalForm().substring(6).replaceAll("%20", " "),
+                    LoginPage.class.getResource("Invoice.jasper").toExternalForm().substring(6).replaceAll("%20", " "));
+             JasperPrint  printing = (JasperPrint) JasperFillManager.fillReport(LoginPage.class.getResource("Invoice.jasper").toExternalForm().substring(6).replaceAll("%20", " "),para,new JRTableModelDataSource(dtm2));
             JasperViewer.viewReport(printing,false);
             }
             catch(Exception e)
@@ -1401,10 +1420,6 @@ public class Sell extends javax.swing.JFrame {
         fillpaydetails();
     }//GEN-LAST:event_custname2FocusLost
 
-    private void custname2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_custname2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_custname2ActionPerformed
-
     private void custname2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_custname2KeyPressed
        switch(evt.getKeyCode())
         {
@@ -1461,10 +1476,12 @@ public class Sell extends javax.swing.JFrame {
                     para.put("payno",payno.getText());
                     SimpleDateFormat dtfrmat2=new SimpleDateFormat("dd-MM-yyyy");
                     para.put("date", dtfrmat2.format(date1.getDate()));
+                    para.put("logo",LoginPage.class.getResource("logo final.png").toExternalForm().substring(6).replaceAll("%20", " "));
+                    para.put("billosoft",LoginPage.class.getResource("Billosoft.png").toExternalForm().substring(6).replaceAll("%20", " "));
             
-            JasperCompileManager.compileReportToFile("E:\\Data entry_Project\\MyDBmanager\\src\\mydbmanager\\Payment_receipt.jrxml",
-                    "E:\\Data entry_Project\\MyDBmanager\\src\\mydbmanager\\Payment_receipt.jasper");
-             JasperPrint printing = (JasperPrint) JasperFillManager.fillReport("E:\\Data entry_Project\\MyDBmanager\\src\\mydbmanager\\Payment_receipt.jasper",para);
+            JasperCompileManager.compileReportToFile(LoginPage.class.getResource("Payment_receipt.jrxml").toExternalForm().substring(6).replaceAll("%20", " "),
+                    LoginPage.class.getResource("Payment_receipt.jasper").toExternalForm().substring(6).replaceAll("%20", " "));
+             JasperPrint printing = (JasperPrint) JasperFillManager.fillReport(LoginPage.class.getResource("Payment_receipt.jasper").toExternalForm().substring(6).replaceAll("%20", " "),para);
             JasperViewer.viewReport(printing,false);
             }
             catch(Exception e)
@@ -1500,17 +1517,18 @@ public class Sell extends javax.swing.JFrame {
 
     private void cashActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cashActionPerformed
         // TODO add your handling code here:
+        if(custname.isEnabled()){
         custname.setText("CASH");
         custname.setEditable(false);
         address.setText("");
         city.setText("");
         phone.setText("");
-        emailid.setText("");
+        emailid.setText("");}
     }//GEN-LAST:event_cashActionPerformed
 
     private void customerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerActionPerformed
         // TODO add your handling code here:
-        if(custname.getText().equals("CASH")){
+        if(custname.getText().equals("CASH")&&custname.isEnabled()){
         custname.setText("");
         custname.setEditable(true);
         address.setText("");
@@ -1530,9 +1548,12 @@ public class Sell extends javax.swing.JFrame {
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
         // TODO add your handling code here:
+        if(frames.remove(this))
+            frames.add(this);
+        else
+            frames.add(this);
         retriveIVN();
         allocatestock();
-        deductfromstock();
         fillcusttable();
     }//GEN-LAST:event_formWindowGainedFocus
 
@@ -1584,8 +1605,8 @@ public class Sell extends javax.swing.JFrame {
     private javax.swing.JButton clear;
     private javax.swing.JLabel complab2;
     private javax.swing.JButton confirm;
-    private javax.swing.JTextField custname;
-    private javax.swing.JTextField custname2;
+    public javax.swing.JTextField custname;
+    public javax.swing.JTextField custname2;
     private javax.swing.JRadioButton customer;
     private com.toedter.calendar.JDateChooser date;
     private com.toedter.calendar.JDateChooser date1;
@@ -1599,7 +1620,7 @@ public class Sell extends javax.swing.JFrame {
     private javax.swing.JLabel grandtotal;
     private javax.swing.JTextField itemname;
     private javax.swing.JTable itemtable;
-    private javax.swing.JTextField ivno;
+    public javax.swing.JTextField ivno;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1624,7 +1645,7 @@ public class Sell extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    public javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JComboBox<String> paymode;

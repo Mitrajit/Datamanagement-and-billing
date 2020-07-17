@@ -5,6 +5,7 @@
  */
 package mydbmanager;
 
+import com.toedter.calendar.JTextFieldDateEditor;
 import java.awt.EventQueue;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -35,9 +37,6 @@ public final class InputPurchase extends javax.swing.JFrame {
         ArrayList<String> in=new ArrayList<>();
     public InputPurchase() {
         initComponents();
-        jSpinner1.setValue(1);
-        Date date = new Date();
-        jDateChooser1.setDate(date);
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMinimumIntegerDigits(4);
         nf.setGroupingUsed(false);
@@ -58,7 +57,28 @@ public final class InputPurchase extends javax.swing.JFrame {
         {JOptionPane.showMessageDialog(null, e);}
         //store();
     }
-
+    ArrayList<JFrame> frames=null;
+    public InputPurchase(Connection con,ArrayList<JFrame> frm) {
+        initComponents();
+        NumberFormat nf = NumberFormat.getInstance();
+        nf.setMinimumIntegerDigits(4);
+        nf.setGroupingUsed(false);
+        try{
+            conn=con;
+            String sql="select last(ID) AS id from Item_List";
+            pst=conn.prepareStatement(sql);
+            rs=pst.executeQuery();
+            if(rs.next()){
+                fid=rs.getInt(1)+1;
+                jLabel5.setText(nf.format(fid));} 
+            else
+                jLabel5.setText(nf.format(fid));
+            frames=frm;
+        }
+        catch(SQLException e)
+        {JOptionPane.showMessageDialog(null, e);}
+        //store();
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -90,9 +110,19 @@ public final class InputPurchase extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
+        jTextField2 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Input purchase");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setIconImage(ScaleImage.scale("Billosoft.png", 16, 16).getImage());
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+            }
+        });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -104,22 +134,9 @@ public final class InputPurchase extends javax.swing.JFrame {
 
         jLabel4.setText("Total price");
 
-        jTextField1.addCaretListener(new javax.swing.event.CaretListener() {
-            public void caretUpdate(javax.swing.event.CaretEvent evt) {
-                jTextField1CaretUpdate(evt);
-            }
-        });
-        jTextField1.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                jTextField1FocusLost(evt);
-            }
-        });
         jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTextField1KeyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                jTextField1KeyReleased(evt);
             }
         });
 
@@ -140,41 +157,6 @@ public final class InputPurchase extends javax.swing.JFrame {
             }
         });
         jTable1.getTableHeader().setReorderingAllowed(false);
-        jTable1.addContainerListener(new java.awt.event.ContainerAdapter() {
-            public void componentAdded(java.awt.event.ContainerEvent evt) {
-                jTable1ComponentAdded(evt);
-            }
-            public void componentRemoved(java.awt.event.ContainerEvent evt) {
-                jTable1ComponentRemoved(evt);
-            }
-        });
-        jTable1.addAncestorListener(new javax.swing.event.AncestorListener() {
-            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
-                jTable1AncestorAdded(evt);
-            }
-            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
-                jTable1AncestorRemoved(evt);
-            }
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
-            }
-        });
-        jTable1.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
-                jTable1CaretPositionChanged(evt);
-            }
-            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
-            }
-        });
-        jTable1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                jTable1PropertyChange(evt);
-            }
-        });
-        jTable1.addVetoableChangeListener(new java.beans.VetoableChangeListener() {
-            public void vetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {
-                jTable1VetoableChange(evt);
-            }
-        });
         jScrollPane1.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
             jTable1.getColumnModel().getColumn(0).setPreferredWidth(20);
@@ -188,19 +170,18 @@ public final class InputPurchase extends javax.swing.JFrame {
 
         jLabel7.setText("Transport");
 
-        jTextField5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField5ActionPerformed(evt);
-            }
-        });
         jTextField5.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTextField5KeyPressed(evt);
             }
         });
 
+        jDateChooser1.setDate(new Date());
         jDateChooser1.setDateFormatString("dd-MM-yyyy");
+        ((JTextFieldDateEditor)jDateChooser1.getDateEditor()).setEditable(false);
 
+        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
+        jSpinner1.setValue(1.0d);
         jSpinner1.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSpinner1StateChanged(evt);
@@ -208,9 +189,9 @@ public final class InputPurchase extends javax.swing.JFrame {
         });
 
         jFormattedTextField1.setText("0.00");
-        jFormattedTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jFormattedTextField1ActionPerformed(evt);
+        jFormattedTextField1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jFormattedTextField1FocusLost(evt);
             }
         });
 
@@ -228,23 +209,6 @@ public final class InputPurchase extends javax.swing.JFrame {
         jFormattedTextField2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jFormattedTextField2MouseClicked(evt);
-            }
-        });
-        jFormattedTextField2.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
-                jFormattedTextField2CaretPositionChanged(evt);
-            }
-            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
-            }
-        });
-        jFormattedTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jFormattedTextField2ActionPerformed(evt);
-            }
-        });
-        jFormattedTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                jFormattedTextField2KeyReleased(evt);
             }
         });
 
@@ -281,6 +245,9 @@ public final class InputPurchase extends javax.swing.JFrame {
             }
         });
 
+        jTextField2.setText("KGS");
+        jTextField2.setFocusable(false);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -298,35 +265,40 @@ public final class InputPurchase extends javax.swing.JFrame {
                                 .addComponent(jLabel8)
                                 .addGap(3, 3, 3)))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel7))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel7))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel2)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(66, 66, 66)
-                                .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(28, 28, 28)
                                         .addComponent(jLabel3)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(26, 26, 26)
-                                        .addComponent(jLabel4)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(57, 57, 57)))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)))
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jFormattedTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
-                                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel4)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addGap(20, 20, 20))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(30, 30, 30)
@@ -372,7 +344,8 @@ public final class InputPurchase extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
@@ -405,43 +378,9 @@ public final class InputPurchase extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField5ActionPerformed
-
-    private void jFormattedTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextField2ActionPerformed
-        // TODO add your handling code here:
-        // create the formatters, default, display, edit
-//        NumberFormatter defaultFormatter = new NumberFormatter(new DecimalFormat("#.##"));
-//        NumberFormatter displayFormatter = new NumberFormatter(new DecimalFormat("#.##"));
-//        NumberFormatter editFormatter = new NumberFormatter(new DecimalFormat("#.##")); 
-//        // set their value classes
-//        defaultFormatter.setValueClass(Double.class);
-//        displayFormatter.setValueClass(Double.class);
-//        editFormatter.setValueClass(Double.class);   
-//        // create and set the DefaultFormatterFactory
-//        DefaultFormatterFactory valueFactory = new DefaultFormatterFactory(defaultFormatter,displayFormatter,editFormatter);
-//        jFormattedTextField2.setFormatterFactory(valueFactory);
-    }//GEN-LAST:event_jFormattedTextField2ActionPerformed
-
-    private void jFormattedTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextField1ActionPerformed
-        // TODO add your handling code here:
-        // create the formatters, default, display, edit
-//        NumberFormatter defaultFormatter = new NumberFormatter(new DecimalFormat("#.##"));
-//        NumberFormatter displayFormatter = new NumberFormatter(new DecimalFormat("#.##"));
-//        NumberFormatter editFormatter = new NumberFormatter(new DecimalFormat("#.##")); 
-//        // set their value classes
-//        defaultFormatter.setValueClass(Double.class);
-//        displayFormatter.setValueClass(Double.class);
-//        editFormatter.setValueClass(Double.class);   
-//        // create and set the DefaultFormatterFactory
-//        DefaultFormatterFactory valueFactory = new DefaultFormatterFactory(defaultFormatter,displayFormatter,editFormatter);
-//        jFormattedTextField1.setFormatterFactory(valueFactory);
-    }//GEN-LAST:event_jFormattedTextField1ActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        Addrow(new Object[]{jLabel5.getText(),jTextField1.getText(),jFormattedTextField2.getText(),jSpinner1.getValue(),jFormattedTextField1.getText()});
+        Addrow(new Object[]{jLabel5.getText(),jTextField1.getText(),jFormattedTextField2.getText(),jSpinner1.getValue()+" "+jTextField2.getText(),jFormattedTextField1.getText()});
         jTextField1.setText("");
         jFormattedTextField1.setText("0.00");
         jFormattedTextField2.setText("0.00");
@@ -537,19 +476,13 @@ public final class InputPurchase extends javax.swing.JFrame {
             jFormattedTextField1.setText(Format(Double.parseDouble(jSpinner1.getValue().toString()) * Double.parseDouble(jFormattedTextField2.getText())));
     }//GEN-LAST:event_jFormattedTextField2CaretUpdate
 
-    private void jTextField1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusLost
-        // TODO add your handling code here:
-        //jFormattedTextField2.setText(Format(Double.parseDouble(jFormattedTextField2.getText())));
-        //jTextField1.setText(Format(Double.parseDouble(jTextField1.getText())));
-    }//GEN-LAST:event_jTextField1FocusLost
-
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         try
         {
             SimpleDateFormat dtfrmat=new SimpleDateFormat("yyyy-MM-dd");
             for(int i=0;i<jTable1.getRowCount();i++){
-            String sql="INSERT INTO Item_List (Transportation,[Date],Item_name,Rate,Quantity,Total) VALUES ('"+jTextField5.getText()+"',#"+dtfrmat.format(jDateChooser1.getDate())+"#,'"+jTable1.getValueAt(i, 1).toString()+"','"+Double.parseDouble(jTable1.getValueAt(i,2).toString())+"','"+Integer.parseInt(jTable1.getValueAt(i, 3).toString())+"','"+Double.parseDouble(jTable1.getValueAt(i, 4).toString())+"')";
+            String sql="INSERT INTO Item_List (Transportation,[Date],Item_name,Rate,Quantity,Unit,Total) VALUES ('"+jTextField5.getText()+"',#"+dtfrmat.format(jDateChooser1.getDate())+"#,'"+jTable1.getValueAt(i, 1).toString()+"','"+Double.parseDouble(jTable1.getValueAt(i,2).toString())+"','"+Double.parseDouble(jTable1.getValueAt(i, 3).toString().substring(0, jTable1.getValueAt(i, 3).toString().indexOf(' ')))+"','"+jTextField2.getText()+"','"+Double.parseDouble(jTable1.getValueAt(i, 4).toString())+"')";
             pst=conn.prepareStatement(sql);
            if( pst.executeUpdate()==1){
                JOptionPane.showMessageDialog(null, "Added successfully");
@@ -576,6 +509,9 @@ public final class InputPurchase extends javax.swing.JFrame {
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMinimumIntegerDigits(4);
         nf.setGroupingUsed(false);
+        if(jTable1.getRowCount()==0)    
+        jLabel5.setText(nf.format(fid));
+        else
         jLabel5.setText(nf.format(Integer.parseInt(jTable1.getValueAt(jTable1.getRowCount()-1,0).toString())+1));
         summation();
     }//GEN-LAST:event_jButton4ActionPerformed
@@ -584,40 +520,6 @@ public final class InputPurchase extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jTable1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jTable1PropertyChange
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_jTable1PropertyChange
-
-    private void jTable1VetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {//GEN-FIRST:event_jTable1VetoableChange
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_jTable1VetoableChange
-
-    private void jTable1ComponentAdded(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_jTable1ComponentAdded
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_jTable1ComponentAdded
-
-    private void jTable1ComponentRemoved(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_jTable1ComponentRemoved
-        // TODO add your handling code here:
-       
-    }//GEN-LAST:event_jTable1ComponentRemoved
-
-    private void jTable1AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jTable1AncestorAdded
-        // TODO add your handling code here:
-     
-    }//GEN-LAST:event_jTable1AncestorAdded
-
-    private void jTable1AncestorRemoved(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jTable1AncestorRemoved
-        
-    }//GEN-LAST:event_jTable1AncestorRemoved
-
-    private void jTable1CaretPositionChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jTable1CaretPositionChanged
-        // TODO add your handling code here:
-       
-    }//GEN-LAST:event_jTable1CaretPositionChanged
 
     private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
         // TODO add your handling code here:
@@ -640,25 +542,6 @@ public final class InputPurchase extends javax.swing.JFrame {
             
         }
     }//GEN-LAST:event_jTextField1KeyPressed
-
-    private void jTextField1CaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_jTextField1CaretUpdate
-        // TODO add your handling code here:
-//         autofill(jTextField1.getText());
-    }//GEN-LAST:event_jTextField1CaretUpdate
-
-    private void jFormattedTextField2CaretPositionChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jFormattedTextField2CaretPositionChanged
-       
-    }//GEN-LAST:event_jFormattedTextField2CaretPositionChanged
-
-    private void jFormattedTextField2KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jFormattedTextField2KeyReleased
-        // TODO add your handling code he
-    }//GEN-LAST:event_jFormattedTextField2KeyReleased
-
-    private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
-        // TODO add your handling code here:
-//        jFormattedTextField2.setCaretPosition(jFormattedTextField2.getText().length());
-//        jFormattedTextField2.moveCaretPosition(0);
-    }//GEN-LAST:event_jTextField1KeyReleased
 
     private void jFormattedTextField2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jFormattedTextField2MouseClicked
         // TODO add your handling code here:
@@ -688,6 +571,18 @@ public final class InputPurchase extends javax.swing.JFrame {
             
         }
     }//GEN-LAST:event_jTextField5KeyPressed
+
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        if(frames.remove(this))
+            frames.add(this);
+        else
+            frames.add(this);
+    }//GEN-LAST:event_formWindowGainedFocus
+
+    private void jFormattedTextField1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jFormattedTextField1FocusLost
+        // TODO add your handling code here:
+        jFormattedTextField1.setText(Format(Double.parseDouble(jFormattedTextField1.getText())));
+    }//GEN-LAST:event_jFormattedTextField1FocusLost
 
     /**
      * @param args the command line arguments
@@ -746,6 +641,7 @@ public final class InputPurchase extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinner1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField5;
     // End of variables declaration//GEN-END:variables
 }
