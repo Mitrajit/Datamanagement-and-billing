@@ -104,6 +104,9 @@ public class CustomerProfile extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         paytab = new javax.swing.JTable();
+        jPanel5 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        rettab = new javax.swing.JTable();
         jLabel12 = new javax.swing.JLabel();
         idlabel = new javax.swing.JLabel();
         amountsoldlabel = new javax.swing.JLabel();
@@ -134,7 +137,7 @@ public class CustomerProfile extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Customer Profile");
-        setIconImage(ScaleImage.scale("Billosoft.png", 16, 16).getImage());
+        setIconImage(ScaleImage.scale("Billosoft.png", 96, 96).getImage());
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -427,6 +430,48 @@ public class CustomerProfile extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Payment History", jPanel4);
 
+        jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        rettab.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Sr no.", "Invoice no.", "Date", "Return total"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        rettab.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rettabMouseClicked(evt);
+            }
+        });
+        jScrollPane4.setViewportView(rettab);
+        if (rettab.getColumnModel().getColumnCount() > 0) {
+            rettab.getColumnModel().getColumn(0).setPreferredWidth(10);
+            rettab.getColumnModel().getColumn(1).setPreferredWidth(15);
+        }
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 656, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Returns", jPanel5);
+
         jLabel12.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel12.setText("Client");
@@ -613,17 +658,42 @@ public class CustomerProfile extends javax.swing.JFrame {
              rs=conn.prepareStatement(sql).executeQuery();
              if(rs.next()){
              int iv=rs.getInt("Invoice_no"),srno=1;
-             double total=rs.getDouble("Total");
+             double total=rs.getDouble("Gtotal");
              String date=dtfrmat.format(rs.getDate("Date"));
              while(rs.next())
              {
                  if(iv!=rs.getInt("Invoice_no")){
                     tm.addRow(new Object[]{srno++,Format(iv),date,Format(total)});
                     iv=rs.getInt("Invoice_no");
-                    total=0;
+                    total=rs.getDouble("Gtotal");
                     date=dtfrmat.format(rs.getDate("Date"));
                  }
-                 total+=rs.getDouble("Total");
+             }
+             tm.addRow(new Object[]{srno++,Format(iv),date,Format(total)});
+             }
+         } catch (Exception e) {
+             JOptionPane.showMessageDialog(null, e);
+         }
+     }
+     private void fillreturntab()
+     {
+         try {
+             DefaultTableModel tm= (DefaultTableModel) rettab.getModel();
+             tm.setRowCount(0);
+             String sql="SELECT * FROM Return WHERE Customer_name='"+name.getText()+"'";
+             rs=conn.prepareStatement(sql).executeQuery();
+             if(rs.next()){
+             int iv=rs.getInt("Invoice_no"),srno=1;
+             double total=rs.getDouble("Gtotal");
+             String date=dtfrmat.format(rs.getDate("Date"));
+             while(rs.next())
+             {
+                 if(iv!=rs.getInt("Invoice_no")){
+                    tm.addRow(new Object[]{srno++,Format(iv),date,Format(total)});
+                    iv=rs.getInt("Invoice_no");
+                    total=rs.getDouble("Gtotal");
+                    date=dtfrmat.format(rs.getDate("Date"));
+                 }
              }
              tm.addRow(new Object[]{srno++,Format(iv),date,Format(total)});
              }
@@ -698,6 +768,7 @@ public class CustomerProfile extends javax.swing.JFrame {
                     creditlim.setText("");    
                    fillinvoicetab();
                    fillpaytab();
+                   fillreturntab();
                    return true;
                 }
                 else
@@ -778,6 +849,8 @@ public class CustomerProfile extends javax.swing.JFrame {
             fillinvoicetab();
         else if(jTabbedPane1.getSelectedIndex()==2)
             fillpaytab();
+        else if(jTabbedPane1.getSelectedIndex()==3)
+            fillreturntab();
     }//GEN-LAST:event_jTabbedPane1StateChanged
 
     private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
@@ -826,7 +899,8 @@ public class CustomerProfile extends javax.swing.JFrame {
             fillinvoicetab();
         else if(jTabbedPane1.getSelectedIndex()==2)
             fillpaytab();
-        filldetails();
+        else if(jTabbedPane1.getSelectedIndex()==3)
+            fillreturntab();
         if(frames.remove(this))
             frames.add(this);
         else
@@ -834,6 +908,7 @@ public class CustomerProfile extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowGainedFocus
 
     private void nameFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nameFocusLost
+        if(!update.isEnabled())
         filldetails();
     }//GEN-LAST:event_nameFocusLost
 
@@ -846,6 +921,7 @@ public class CustomerProfile extends javax.swing.JFrame {
         {   evt.consume();
         if(!invtab.getValueAt(selection, 0).equals("")){
             sell.ivno.setText((String) invtab.getValueAt(selection, 1));
+            sell.jTabbedPane1.setSelectedIndex(0);
             sell.findinv();
             if(!sell.isVisible())
             sell.setVisible(true);
@@ -885,6 +961,7 @@ public class CustomerProfile extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        sell.customer.setSelected(true);
         sell.custname.setText(name.getText());
         sell.filldetails();
         sell.jTabbedPane1.setSelectedIndex(0);
@@ -912,6 +989,28 @@ public class CustomerProfile extends javax.swing.JFrame {
        if(phone.getText().length()!=10)
            JOptionPane.showMessageDialog(this, "The phone number doesn't contain 10 digits");
     }//GEN-LAST:event_phoneFocusLost
+
+    private void rettabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rettabMouseClicked
+        EventQueue.invokeLater(new Runnable() {
+           @Override
+           public void run() {
+       int selection=rettab.getSelectedRow();
+       if(evt.getClickCount()==2&&!evt.isConsumed())
+        {   evt.consume();
+        if(!rettab.getValueAt(selection, 0).equals("")){
+            sell.sinv.setText((String) rettab.getValueAt(selection, 1));
+            sell.jTabbedPane1.setSelectedIndex(2);
+            sell.returnitem();
+            if(!sell.isVisible())
+            sell.setVisible(true);
+            else if(sell.getState()==Frame.ICONIFIED)
+            sell.setState(Frame.NORMAL);
+             else
+            sell.requestFocus();
+            }
+        }
+           }});
+    }//GEN-LAST:event_rettabMouseClicked
 
     //The Functions
     private void allocate(String column)
@@ -1022,8 +1121,10 @@ public class CustomerProfile extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     public javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
@@ -1032,6 +1133,7 @@ public class CustomerProfile extends javax.swing.JFrame {
     private javax.swing.JTable paytab;
     private javax.swing.JTextField phone;
     private javax.swing.JTextField pin;
+    private javax.swing.JTable rettab;
     private javax.swing.JTextField state;
     private javax.swing.JComboBox<String> type;
     private javax.swing.JButton update;

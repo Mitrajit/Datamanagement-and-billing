@@ -6,10 +6,10 @@
 package mydbmanager;
 
 import com.toedter.calendar.JTextFieldDateEditor;
-import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -23,12 +23,12 @@ import java.util.Vector;
 import javax.security.auth.callback.ConfirmationCallback;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
-import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRTableModelDataSource;
+import net.sf.jasperreports.swing.JRViewer;
+import net.sf.jasperreports.swing.JRViewerToolbar;
 import net.sf.jasperreports.view.JasperViewer;
 
 /**
@@ -98,6 +98,8 @@ public class Sell extends javax.swing.JFrame {
     
     private boolean deductfromstock()
     {
+        if(!confirm.isEnabled())
+            return false;
         DefaultTableModel tm=(DefaultTableModel)itemtable.getModel();
         for(int i=0;i<itemtable.getRowCount();i++){
                        try {
@@ -254,7 +256,9 @@ public class Sell extends javax.swing.JFrame {
                         company=rs.getString("Company");
                 }
                 else
-                    JOptionPane.showMessageDialog(null, "Record not found");
+                {JOptionPane.showMessageDialog(null, "Record not found");
+                 custname.setText("");
+                }
             } catch (Exception e) {
                        JOptionPane.showMessageDialog(null, e);                    
             }
@@ -317,6 +321,7 @@ public class Sell extends javax.swing.JFrame {
         add.setEnabled(false);
         delete.setEnabled(false);
         confirm.setEnabled(false);
+        pen.setEnabled(false);
         print.setSelected(false);
         }
     /**
@@ -331,6 +336,7 @@ public class Sell extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         buttonGroup1 = new javax.swing.ButtonGroup();
+        jButton3 = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         custname = new javax.swing.JTextField();
@@ -374,6 +380,8 @@ public class Sell extends javax.swing.JFrame {
         jLabel15 = new javax.swing.JLabel();
         customer = new javax.swing.JRadioButton();
         cash = new javax.swing.JRadioButton();
+        pen = new javax.swing.JLabel();
+        returnalert = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -397,6 +405,35 @@ public class Sell extends javax.swing.JFrame {
         payno = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         date1 = new com.toedter.calendar.JDateChooser();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel20 = new javax.swing.JLabel();
+        sinv = new javax.swing.JTextField();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        currentinv = new javax.swing.JTable();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        returntable = new javax.swing.JTable();
+        jButton2 = new javax.swing.JButton();
+        jLabel21 = new javax.swing.JLabel();
+        doz = new javax.swing.JSpinner();
+        jTextField3 = new javax.swing.JTextField();
+        jLabel22 = new javax.swing.JLabel();
+        pcs = new javax.swing.JSpinner();
+        jTextField4 = new javax.swing.JTextField();
+        returnamt = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        gross = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
+        disc = new javax.swing.JLabel();
+        jLabel28 = new javax.swing.JLabel();
+        retdisc = new javax.swing.JLabel();
+        jLabel29 = new javax.swing.JLabel();
+        returndate = new com.toedter.calendar.JDateChooser();
+        returnprint = new javax.swing.JButton();
+        stotal = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        returnstotal = new javax.swing.JLabel();
+        jLabel27 = new javax.swing.JLabel();
+        custnam = new javax.swing.JLabel();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -411,9 +448,11 @@ public class Sell extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
+        jButton3.setText("jButton3");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Sales and payment");
-        setIconImage(ScaleImage.scale("Billosoft.png", 16, 16).getImage());
+        setTitle("Sales payment and returns");
+        setIconImage(ScaleImage.scale("Billosoft.png", 96, 96).getImage());
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -493,6 +532,7 @@ public class Sell extends javax.swing.JFrame {
 
         jLabel7.setText("Quantity");
 
+        qut.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         qut.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 qutStateChanged(evt);
@@ -503,11 +543,6 @@ public class Sell extends javax.swing.JFrame {
 
         total.setEditable(false);
         total.setText("0.00");
-        total.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                totalActionPerformed(evt);
-            }
-        });
 
         findinvoice.setText("Find Invoice");
         findinvoice.addActionListener(new java.awt.event.ActionListener() {
@@ -608,7 +643,7 @@ public class Sell extends javax.swing.JFrame {
         Unit.setEditable(false);
         Unit.setText("DOZ");
 
-        qutpc.setModel(new javax.swing.SpinnerNumberModel());
+        qutpc.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         qutpc.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 qutpcStateChanged(evt);
@@ -637,17 +672,35 @@ public class Sell extends javax.swing.JFrame {
             }
         });
 
+        pen.setFont(new java.awt.Font("Segoe UI Emoji", 0, 15)); // NOI18N
+        pen.setText("🖊");
+        pen.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        pen.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                penMouseClicked(evt);
+            }
+        });
+
+        returnalert.setFont(new java.awt.Font("Segoe UI Emoji", 0, 11)); // NOI18N
+        returnalert.setText("⚠ Some items was returned");
+        returnalert.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        returnalert.setVisible(false);
+        returnalert.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                returnalertMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(jScrollPane2))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(returnalert)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -663,13 +716,17 @@ public class Sell extends javax.swing.JFrame {
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(totallabel)
                                     .addComponent(discamt)
-                                    .addComponent(grandtotal)))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(grandtotal)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(pen, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(confirm, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(print, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(clear, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(clear, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jScrollPane2))
                 .addGap(30, 30, 30))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(11, 11, 11)
@@ -785,11 +842,12 @@ public class Sell extends javax.swing.JFrame {
                     .addComponent(add)
                     .addComponent(findinvoice))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
                 .addGap(10, 10, 10)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
-                    .addComponent(totallabel))
+                    .addComponent(totallabel)
+                    .addComponent(returnalert))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -799,7 +857,8 @@ public class Sell extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
-                    .addComponent(grandtotal))
+                    .addComponent(grandtotal)
+                    .addComponent(pen))
                 .addGap(12, 12, 12)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(print)
@@ -1002,6 +1061,251 @@ public class Sell extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Payment", jPanel3);
 
+        jLabel20.setText("Invoice number");
+
+        sinv.setText("Invoice number here");
+        sinv.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                sinvFocusLost(evt);
+            }
+        });
+        sinv.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                sinvMouseClicked(evt);
+            }
+        });
+        sinv.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                sinvKeyPressed(evt);
+            }
+        });
+
+        currentinv.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "No", "Item name", "Rate", "Quantity", "Total"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        currentinv.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                currentinvMouseClicked(evt);
+            }
+        });
+        jScrollPane4.setViewportView(currentinv);
+        if (currentinv.getColumnModel().getColumnCount() > 0) {
+            currentinv.getColumnModel().getColumn(0).setPreferredWidth(10);
+            currentinv.getColumnModel().getColumn(1).setPreferredWidth(150);
+        }
+
+        returntable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "No", "Item name", "Rate", "Quantity", "Total"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane5.setViewportView(returntable);
+        if (returntable.getColumnModel().getColumnCount() > 0) {
+            returntable.getColumnModel().getColumn(0).setPreferredWidth(10);
+            returntable.getColumnModel().getColumn(1).setPreferredWidth(150);
+        }
+
+        jButton2.setText("Return");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jLabel21.setText("Quantity");
+
+        doz.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+        doz.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                dozStateChanged(evt);
+            }
+        });
+
+        jTextField3.setText("DOZ");
+
+        jLabel22.setText("-");
+
+        pcs.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+        pcs.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                pcsStateChanged(evt);
+            }
+        });
+
+        jTextField4.setText("PCS");
+
+        returnamt.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        returnamt.setText("0.00");
+
+        jLabel24.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel24.setText("Total");
+
+        gross.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        gross.setText("0.00");
+
+        jLabel26.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel26.setText("Total");
+
+        disc.setText("0%");
+
+        jLabel28.setText("Discount");
+
+        retdisc.setText("0%");
+
+        jLabel29.setText("Discount");
+
+        returndate.setDate(new Date());
+
+        returnprint.setText("Print");
+        returnprint.setEnabled(false);
+        returnprint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                returnprintActionPerformed(evt);
+            }
+        });
+
+        stotal.setText("0.00");
+
+        jLabel23.setText("Subtotal");
+
+        returnstotal.setText("0.00");
+
+        jLabel27.setText("Subtotal");
+
+        custnam.setText(" ");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(jLabel20)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(sinv, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(custnam)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(returndate, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(returnprint, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel27)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(returnstotal)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel29)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(retdisc)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel24)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(returnamt)
+                                .addGap(61, 61, 61))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jLabel21)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(doz, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel22)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(pcs, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 292, Short.MAX_VALUE)
+                                .addComponent(jLabel23)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(stotal)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel28)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(disc)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel26)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(gross)
+                                .addGap(72, 72, 72))
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane4))))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel20)
+                        .addComponent(sinv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(custnam))
+                    .addComponent(returndate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel21)
+                    .addComponent(doz, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel22)
+                    .addComponent(pcs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gross)
+                    .addComponent(jLabel26)
+                    .addComponent(disc)
+                    .addComponent(jLabel28)
+                    .addComponent(stotal)
+                    .addComponent(jLabel23))
+                .addGap(7, 7, 7)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(returnamt)
+                    .addComponent(jLabel24)
+                    .addComponent(retdisc)
+                    .addComponent(jLabel29)
+                    .addComponent(jButton2)
+                    .addComponent(returnprint)
+                    .addComponent(returnstotal)
+                    .addComponent(jLabel27))
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Return", jPanel1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -1010,27 +1314,12 @@ public class Sell extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 636, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jTabbedPane1)
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void totalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_totalActionPerformed
-        // TODO add your handling code here:
-        // create the formatters, default, display, edit
-        //        NumberFormatter defaultFormatter = new NumberFormatter(new DecimalFormat("#.##"));
-        //        NumberFormatter displayFormatter = new NumberFormatter(new DecimalFormat("#.##"));
-        //        NumberFormatter editFormatter = new NumberFormatter(new DecimalFormat("#.##"));
-        //        // set their value classes
-        //        defaultFormatter.setValueClass(Double.class);
-        //        displayFormatter.setValueClass(Double.class);
-        //        editFormatter.setValueClass(Double.class);
-        //        // create and set the DefaultFormatterFactory
-        //        DefaultFormatterFactory valueFactory = new DefaultFormatterFactory(defaultFormatter,displayFormatter,editFormatter);
-        //        jFormattedTextField1.setFormatterFactory(valueFactory);
-    }//GEN-LAST:event_totalActionPerformed
 
     private void qutStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_qutStateChanged
         // TODO add your handling code here:
@@ -1077,7 +1366,9 @@ public class Sell extends javax.swing.JFrame {
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
          // TODO add your handling code here:
-        int serialno;
+        if(Integer.valueOf(qut.getValue().toString())*12+Integer.valueOf(qutpc.getValue().toString())==0)
+            return;
+         int serialno;
         if(itemtable.getRowCount()==0)
             serialno=1;
         else
@@ -1087,14 +1378,35 @@ public class Sell extends javax.swing.JFrame {
             if(Double.valueOf(rate.getText())<minsellprice.get(itemname.getText())||Double.valueOf(rate.getText())>mrp.get(itemname.getText())){
                 if(JOptionPane.showConfirmDialog(null, "The minimum selling price is "+Format(minsellprice.get(itemname.getText()))+" and the MRP is "+Format(mrp.get(itemname.getText()))+"\nDo you still want to proceed?","Confirmation",ConfirmationCallback.YES_NO_OPTION)!=0)
                     return;}
+            for (int i = 0; i < itemtable.getRowCount(); i++) {
+                if(itemtable.getValueAt(i, 1).toString().equals(itemname.getText()))
+                {    
+                    quantityavailable.replace(itemname.getText(), quantityavailable.get(itemname.getText())+quantifier(itemtable.getValueAt(i, 3).toString())-
+                            Integer.valueOf(qut.getValue().toString())*12-Integer.valueOf(qutpc.getValue().toString()));
+                    itemtable.setValueAt(itemname.getText(), i, 1);
+                    itemtable.setValueAt(rate.getText(), i, 2);
+                    itemtable.setValueAt(quantifier(Integer.valueOf(qut.getValue().toString())*12+
+                Integer.valueOf(qutpc.getValue().toString())), i, 3);
+                    itemtable.setValueAt(total.getText(), i, 4);
+                    itemname.setText("");
+                    total.setText("0.00");
+                    rate.setText("0.00");
+                    qut.setValue(1);
+                    qutpc.setValue(0);
+                    qutshow.setText("");
+                    summation();
+                    return;
+                }
+            }
         Addrow(new Object[]{serialno,itemname.getText(),rate.getText(),quantifier(Integer.valueOf(qut.getValue().toString())*12+
                 Integer.valueOf(qutpc.getValue().toString())),total.getText()});
-        quantityavailable.replace(itemname.getText(), quantityavailable.get(itemname.getText())-Integer.valueOf(qut.getValue().toString())*12+
+        quantityavailable.replace(itemname.getText(), quantityavailable.get(itemname.getText())-Integer.valueOf(qut.getValue().toString())*12-
                 Integer.valueOf(qutpc.getValue().toString()));
         itemname.setText("");
         total.setText("0.00");
         rate.setText("0.00");
         qut.setValue(1);
+        qutpc.setValue(0);
         qutshow.setText("");
 //        NumberFormat nf = NumberFormat.getInstance();
 //        nf.setMinimumIntegerDigits(4);
@@ -1135,7 +1447,6 @@ public class Sell extends javax.swing.JFrame {
         // TODO add your handling code here:
         try
         {
-            summation();
             if(!custname.getText().equals("")&&itemtable.getRowCount()!=0) {
                 SimpleDateFormat dtfrmat=new SimpleDateFormat("yyyy-MM-dd");
                 DefaultTableModel tm = (DefaultTableModel)itemtable.getModel();
@@ -1167,13 +1478,13 @@ public class Sell extends javax.swing.JFrame {
                                     "' WHERE Item = '"+itemnames.get(j)+"'";
                             pst=conn.prepareStatement(sql);
                             pst.executeUpdate();}
-                            
+                            ivno.setText(Format(IVN));
                         for(int i=0;i<itemtable.getRowCount();i++){
-                            sql="INSERT INTO Sell (Invoice_no,[Date],Customer_name,Address,City_town,Item,Rate,Cost_price,Quantity,Unit,Total,Discount) VALUES ('"+IVN+"','"+
-                            dtfrmat.format(date.getDate())+"','"+custname.getText()+"','"+address.getText()+"','"+city.getText()+"','"+
+                            sql="INSERT INTO Sell (Invoice_no,[Date],Customer_name,Address,City_town,Phone_no,EmailID,Company,Item,Rate,Cost_price,Quantity,Unit,Total,Discount,Gtotal) VALUES ('"+IVN+"','"+
+                            dtfrmat.format(date.getDate())+"','"+custname.getText()+"','"+address.getText()+"','"+city.getText()+"','"+phone.getText()+"','"+emailid.getText()+"','"+company+"','"+
                             itemtable.getValueAt(i, 1).toString()+"','"+Double.parseDouble(itemtable.getValueAt(i, 2).toString())+"','"+costprice.get(itemtable.getValueAt(i, 1))*quantifier(itemtable.getValueAt(i, 3).toString())/12d+"','"+
                             quantifier(itemtable.getValueAt(i, 3).toString())+"','"+
-                            "PCS"+"','"+            itemtable.getValueAt(i, 4)+"','"+discpercent.getText()+"')";
+                            "PCS"+"','"+            itemtable.getValueAt(i, 4)+"','"+discpercent.getText()+"','"+Double.parseDouble(grandtotal.getText())+"')";
                             pst=conn.prepareStatement(sql);
                             pst.executeUpdate();}
                         JOptionPane.showMessageDialog(null, "Added successfully");
@@ -1189,6 +1500,7 @@ public class Sell extends javax.swing.JFrame {
                         delete.setEnabled(false);
                         findinvoice.setEnabled(false);
                         confirm.setEnabled(false);
+                        pen.setEnabled(false);
                         print.setEnabled(true);
                 
             } else
@@ -1196,8 +1508,7 @@ public class Sell extends javax.swing.JFrame {
         }
         catch(Exception e)
         {
-           JOptionPane.showMessageDialog(null, e);
-                    
+           JOptionPane.showMessageDialog(null, e);          
         }
     }//GEN-LAST:event_confirmActionPerformed
 
@@ -1227,58 +1538,70 @@ public class Sell extends javax.swing.JFrame {
         delete.setEnabled(true);
         findinvoice.setEnabled(true);
         confirm.setEnabled(true);
+        pen.setEnabled(true);
+        returnalert.setVisible(false);
         print.setEnabled(false);
         DefaultTableModel table= (DefaultTableModel)itemtable.getModel();
         table.setRowCount(0);
+        allocatestock();
         date.setDate(dt);
     }//GEN-LAST:event_clearActionPerformed
 public void findinv()
 {
     try {
             boolean gotname=true;
+            ResultSet rs2=null;
+            returnalert.setVisible(false);
             String sql="SELECT * FROM Sell WHERE Invoice_no='"+Integer.parseInt(ivno.getText())+"'";
             pst=conn.prepareStatement(sql);
-            rs=pst.executeQuery();
-            if(!rs.next()){
+            rs2=pst.executeQuery();
+            if(!rs2.next()){
             SimpleDateFormat dtfrmat=new SimpleDateFormat("yyyy-MM-dd");
             sql="SELECT * FROM Sell WHERE [Date] = '"+dtfrmat.format(date.getDate())+"' AND Customer_name='"+custname.getText()+"'";
             pst=conn.prepareStatement(sql);
-            rs=pst.executeQuery();
-            if(!(rs.next()))
+            rs2=pst.executeQuery();
+            if(!(rs2.next()))
             {JOptionPane.showMessageDialog(null, "No record found");
             gotname=false;}
             }
             if(gotname){
                 int serial=0;
-                int lastivns=rs.getInt("Invoice_no");
+                int lastivns=rs2.getInt("Invoice_no");
+                if(conn.prepareStatement("SELECT * FROM Return WHERE Invoice_no='"+lastivns+"'").executeQuery().next())
+                    returnalert.setVisible(true);
                 ivno.setText(Format(lastivns));
-                custname.setText(rs.getString("Customer_name"));
-//                address.setText(rs.getString("Address"));
-//                city.setText(rs.getString("City_town"));
-                date.setDate(rs.getDate("Date"));
+                custname.setText(rs2.getString("Customer_name"));
+                address.setText(rs2.getString("Address").equals("null")?" ":rs2.getString("Address"));
+                city.setText(rs2.getString("City_town").equals("null")?" ":rs2.getString("City_town"));
+                phone.setText(rs2.getString("Phone_no").equals("null")?" ":rs2.getString("Phone_no"));
+                emailid.setText(rs2.getString("EmailID").equals("null")?" ":rs2.getString("EmailID"));
+                company=rs2.getString("Company").equals("null")?" ":rs2.getString("Company");
+                date.setDate(rs2.getDate("Date"));
                 print.setEnabled(true);
-                discpercent.setText(Double.toString(rs.getDouble("Discount")));
+                discpercent.setText(Double.toString(rs2.getDouble("Discount")));
                 ivno.setEnabled(false);
+                double gtotal=rs2.getDouble("Gtotal");
                 DefaultTableModel table = (DefaultTableModel)itemtable.getModel();
                 table.setRowCount(0);
+                allocatestock();
                 boolean notset=true;
-            do 
+                do 
             {
-                if(rs.getInt("Invoice_no")!=lastivns){
-                    lastivns=rs.getInt("Invoice_no");
+                if(rs2.getInt("Invoice_no")!=lastivns){
+                    lastivns=rs2.getInt("Invoice_no");
                     ivno.setText(ivno.getText()+", "+Format(lastivns));
+                    returnalert.setVisible(false);
                     if(notset){
                     print.setEnabled(false);
-                    ivno.setEnabled(true);
+                    ivno.setEnabled(false);
                     JOptionPane.showMessageDialog(null, "Multiple invoice is shown find one invoice using invoice number to enable "
                             + "printing and see the exact Grand total");
                     notset=false;
                     }
                 }
-                Object[] row={++serial,rs.getString("Item"),Format(rs.getDouble("Rate")),quantifier(rs.getInt("Quantity")),Format(rs.getDouble("Total"))};
+                Object[] row={++serial,rs2.getString("Item"),Format(rs2.getDouble("Rate")),quantifier(rs2.getInt("Quantity")),Format(rs2.getDouble("Total"))};
                 Addrow(row);
-            }while(rs.next());
-            filldetails();
+            }while(rs2.next());
             itemname.setText("");
             rate.setText("0.00");
             qut.setValue(1);
@@ -1289,10 +1612,14 @@ public void findinv()
             add.setEnabled(false);
             delete.setEnabled(false);
             confirm.setEnabled(false);
+            pen.setEnabled(false);
             summation();
+            grandtotal.setText(Format(gtotal));
+            discamt.setText(Format(gtotal-Double.parseDouble(totallabel.getText())));
             }
             
         } catch (Exception e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(null, e);
         }
 }
@@ -1300,10 +1627,9 @@ public void findinv()
         // TODO add your handling code here:
         findinv();
     }//GEN-LAST:event_findinvoiceActionPerformed
-
+String url;
     private void printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printActionPerformed
         // TODO add your handling code here:
-        summation();
         Vector<String> columnNames = new Vector<>();
         columnNames.add("No");
         columnNames.add("Item name");
@@ -1329,13 +1655,20 @@ public void findinv()
             para.put("Invoice_no", ivno.getText());
             SimpleDateFormat dtfrmat=new SimpleDateFormat("dd-MM-yyyy");
             para.put("Date", dtfrmat.format(date.getDate()));
-            para.put("logo",LoginPage.class.getResource("logo final.png").toExternalForm().substring(6).replaceAll("%20", " "));
-            para.put("billosoft",LoginPage.class.getResource("Billosoft.png").toExternalForm().substring(6).replaceAll("%20", " "));
+            try {
+                url=new File(Sell.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+                url=url.substring(0, url.indexOf("Billosoft"));
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex);
+        }
+            para.put("logo",(url+"Billosoft\\print\\logo final.png"));
+            para.put("billosoft",(url+"Billosoft\\print\\Billosoft.png"));
             try{
-            JasperCompileManager.compileReportToFile(LoginPage.class.getResource("Invoice.jrxml").toExternalForm().substring(6).replaceAll("%20", " "),
-                    LoginPage.class.getResource("Invoice.jasper").toExternalForm().substring(6).replaceAll("%20", " "));
-             JasperPrint  printing = (JasperPrint) JasperFillManager.fillReport(LoginPage.class.getResource("Invoice.jasper").toExternalForm().substring(6).replaceAll("%20", " "),para,new JRTableModelDataSource(dtm2));
-            JasperViewer.viewReport(printing,false);
+             JasperPrint  printing = (JasperPrint) JasperFillManager.fillReport((url+"Billosoft\\print\\Invoice.jasper")
+                     ,para,new JRTableModelDataSource(dtm2));
+             JasperViewer jaspervier=new JasperViewer(printing,false);//disappearing the save button due to some problems in font style
+             ((javax.swing.JButton)((JRViewerToolbar)((JRViewer)((javax.swing.JPanel)jaspervier.getContentPane().getComponents()[0]).getComponent(0)).getComponent(0)).getComponent(0)).setVisible(false);
+             jaspervier.setVisible(true);
             }
             catch(Exception e)
             {
@@ -1345,10 +1678,6 @@ public void findinv()
     }//GEN-LAST:event_printActionPerformed
     String prevdiscper="";
     private void discpercentKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_discpercentKeyPressed
-        // TODO add your handling code here:
-        //if(((evt.getKeyChar()>=48&&evt.getKeyChar()<=57))||evt.getKeyChar()=='.'||evt.getKeyCode()==Event.BACK_SPACE||evt.getKeyCode()==Event.ENTER)
-           //give override
-         
            EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -1458,6 +1787,8 @@ public void findinv()
             pst=conn.prepareStatement(sql);
             pst.executeUpdate();            
             fillpaydetails();
+            String amtp=amtpaid.getText();
+            amtpaid.setText("");
             JOptionPane.showMessageDialog(null, "Paid successfully");
             if(receipt.isSelected()){//JASPER REPORT RECEIPT
                 try{
@@ -1471,18 +1802,20 @@ public void findinv()
                     para.put("paymode",paymode.getSelectedItem());
                     String text = (txnno.isVisible())?"TXN: "+txnno.getText():"";
                     para.put("txn",text);
-                    para.put("amtpaid",amtpaid.getText());
+                    para.put("amtpaid",amtp);
                     para.put("due",due.getText());
                     para.put("payno",payno.getText());
                     SimpleDateFormat dtfrmat2=new SimpleDateFormat("dd-MM-yyyy");
                     para.put("date", dtfrmat2.format(date1.getDate()));
-                    para.put("logo",LoginPage.class.getResource("logo final.png").toExternalForm().substring(6).replaceAll("%20", " "));
-                    para.put("billosoft",LoginPage.class.getResource("Billosoft.png").toExternalForm().substring(6).replaceAll("%20", " "));
-            
-            JasperCompileManager.compileReportToFile(LoginPage.class.getResource("Payment_receipt.jrxml").toExternalForm().substring(6).replaceAll("%20", " "),
-                    LoginPage.class.getResource("Payment_receipt.jasper").toExternalForm().substring(6).replaceAll("%20", " "));
-             JasperPrint printing = (JasperPrint) JasperFillManager.fillReport(LoginPage.class.getResource("Payment_receipt.jasper").toExternalForm().substring(6).replaceAll("%20", " "),para);
-            JasperViewer.viewReport(printing,false);
+                   
+                url= new File(Sell.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+                url=url.substring(0, url.indexOf("Billosoft"));
+                    para.put("logo",url+"Billosoft\\print\\logo final.png");
+                    para.put("billosoft",url+"Billosoft\\print\\Billosoft.png");
+             JasperPrint printing = (JasperPrint) JasperFillManager.fillReport(url+"\\Billosoft\\print\\Payment_receipt.jasper",para);
+            JasperViewer jaspervier=new JasperViewer(printing,false);//diappearing the save button due to some font style problems
+             ((javax.swing.JButton)((JRViewerToolbar)((JRViewer)((javax.swing.JPanel)jaspervier.getContentPane().getComponents()[0]).getComponent(0)).getComponent(0)).getComponent(0)).setVisible(false);
+             jaspervier.setVisible(true);
             }
             catch(Exception e)
             {
@@ -1523,7 +1856,9 @@ public void findinv()
         address.setText("");
         city.setText("");
         phone.setText("");
-        emailid.setText("");}
+        emailid.setText("");
+        company=" ";
+        }
     }//GEN-LAST:event_cashActionPerformed
 
     private void customerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerActionPerformed
@@ -1554,8 +1889,302 @@ public void findinv()
             frames.add(this);
         retriveIVN();
         allocatestock();
+        deductfromstock();
         fillcusttable();
     }//GEN-LAST:event_formWindowGainedFocus
+
+    private void penMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_penMouseClicked
+        if(!pen.isEnabled())
+            return;
+        String input=JOptionPane.showInputDialog(this, "Enter the grand total");
+        try{
+            double gt=Double.parseDouble(input),st=Double.parseDouble(totallabel.getText());
+            grandtotal.setText(Format(gt));
+            discpercent.setText(Format((st-gt)/st*100));
+            discamt.setText(Format(gt-st));
+        }catch(Exception e){}
+    }//GEN-LAST:event_penMouseClicked
+double subtotal = 0d,gtotal= 0d;
+boolean retfoundflag=false;
+HashMap <String,Double> returncp = new HashMap<>();
+    private void sinvKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sinvKeyPressed
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if(evt.getKeyCode()==KeyEvent.VK_ENTER)
+                {
+                    returnitem();
+                }
+            }
+        });
+    }//GEN-LAST:event_sinvKeyPressed
+    String raddress,rcity,rphone,remailid,rcompany;
+    public void returnitem(){
+        DefaultTableModel tm = (DefaultTableModel) currentinv.getModel();
+        DefaultTableModel tdm= (DefaultTableModel) returntable.getModel();
+        try {
+                        sinv.setText(Format(Integer.parseInt(sinv.getText())));
+                        returnprint.setEnabled(false);
+                        String sql="SELECT * FROM Sell WHERE Invoice_no='"+Integer.parseInt(sinv.getText())+"'";
+                        pst=conn.prepareStatement(sql);
+                        rs=pst.executeQuery();
+                        int sr=1;
+                        
+                        tm.setRowCount(0);
+                        disc.setText("0%");
+                        gross.setText("0.00");
+                        
+                        tdm.setRowCount(0);
+                        returnamt.setText("0.00");
+                        retdisc.setText("0%");
+                        subtotal=0d;
+                        
+                        if(rs.next())
+                        {   
+                            custnam.setText(rs.getString("Customer_name"));
+                            raddress=rs.getString("Address").equals("null")?" ":rs.getString("Address");
+                            rcity=rs.getString("City_town").equals("null")?" ":rs.getString("City_town");
+                            rphone=rs.getString("Phone_no").equals("null")?" ":rs.getString("Phone_no");
+                            remailid= rs.getString("EmailID").equals("null")?" ":rs.getString("EmailID");
+                            rcompany=rs.getString("Company").equals("null")?" ":rs.getString("Company");
+                            gtotal=rs.getDouble("Gtotal");
+                            gross.setText(Format(gtotal));
+                            returncp.clear();
+                        do{
+                        tm.addRow(new Object[]{sr++,rs.getString("Item"),Format(rs.getDouble("Rate")),quantifier(rs.getInt("Quantity")),Format(rs.getDouble("Total"))});
+                        returncp.put(rs.getString("Item"),rs.getDouble("Cost_price")/rs.getInt("Quantity"));
+                        subtotal+=rs.getDouble("Total");
+                        }while(rs.next());
+                        stotal.setText(Format(subtotal));
+                        disc.setText(Format((subtotal-gtotal)/subtotal*100)+"%");
+                        ResultSet rs2 = conn.prepareStatement("SELECT * FROM Return WHERE Invoice_no='"+Integer.parseInt(sinv.getText())+"'").executeQuery();
+                        if(rs2.next())
+                            {   retfoundflag=true;
+                                returnprint.setEnabled(true);
+                                returnamt.setText(Format(rs2.getDouble("Gtotal")));
+                                retdisc.setText(Double.toString(rs2.getDouble("Discount")));
+                                do{
+                                    tdm.addRow(new Object[]{"",rs2.getString("Item"),Format(rs2.getDouble("Rate")),quantifier(rs2.getInt("Quantity")),Format(rs2.getDouble("Total"))});
+                                }while(rs2.next());
+                            summationofreturntable();
+                            }
+                        else 
+                        {    retfoundflag=false;
+                            returnprint.setEnabled(false);}
+                        }
+                        else
+                        {
+                            
+                            JOptionPane.showMessageDialog(null, "Invoice number not found");
+                        }
+                    } catch (NumberFormatException e) {sinv.setText("");  tm.setRowCount(0);
+                        disc.setText("0%");
+                        gross.setText("0.00");
+                        stotal.setText("0.00");
+                        
+                        tdm.setRowCount(0);
+                        returnamt.setText("0.00");
+                        retdisc.setText("0%");
+                        returnstotal.setText("0.00");
+                        custnam.setText("");}
+                      catch (Exception e){
+                        JOptionPane.showMessageDialog(null, e);
+                    }
+    }
+    private void sinvMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sinvMouseClicked
+       sinv.setCaretPosition(0);
+       sinv.moveCaretPosition(sinv.getText().length());
+    }//GEN-LAST:event_sinvMouseClicked
+boolean nochangestate=false;
+    private void fill()
+{
+    try{
+        if(nochangestate)
+            return;
+    int selection = currentinv.getSelectedRow();
+    String s=(String) currentinv.getValueAt(selection,1);
+    if(((int)doz.getValue()*12+(int)pcs.getValue())>quantifier(currentinv.getValueAt(selection, 3).toString()))
+    {
+        JOptionPane.showMessageDialog(this, "Quantity of return exceeds quantity sold");
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                doz.setValue(0);
+                pcs.setValue(0);
+            }
+        });
+    }else{
+    boolean found = false;    
+    DefaultTableModel tm = (DefaultTableModel) returntable.getModel();
+    for(int i=0;i<returntable.getRowCount();i++)
+        if(returntable.getValueAt(i,1).equals(s))
+        {
+            found = true;
+            if((int)doz.getValue()*12+(int)pcs.getValue()==0)
+            {tm.removeRow(i); break;}
+            returntable.setValueAt(quantifier((int)doz.getValue()*12+(int)pcs.getValue()), i, 3);
+            returntable.setValueAt(Format(((int)doz.getValue()*12+(int)pcs.getValue())*Double.parseDouble(returntable.getValueAt(i, 2).toString())/12.0d), i, 4);
+            break;
+        }
+    if(!found&&(int)doz.getValue()*12+(int)pcs.getValue()!=0)
+    {
+        tm.addRow(new Object[]{"",s,currentinv.getValueAt(selection, 2),quantifier((int)doz.getValue()*12+(int)pcs.getValue()),Format((Integer.parseInt(doz.getValue().toString())*12+Integer.parseInt(pcs.getValue().toString()))*Double.parseDouble(currentinv.getValueAt(selection, 2).toString())/12.0d)});
+    }
+    summationofreturntable();
+    }}
+    catch(ArrayIndexOutOfBoundsException e){}
+}
+    private void summationofreturntable()
+    {
+        double total=0d;
+    for(int i=0;i<returntable.getRowCount();i++)
+    {   returntable.setValueAt(i+1, i, 0);
+        total+=Double.parseDouble(returntable.getValueAt(i, 4).toString());
+    }
+        returnamt.setText(Format(total*(1-(subtotal-gtotal)/subtotal)));
+        returnstotal.setText(Format(total));
+        retdisc.setText(Format((subtotal-gtotal)/subtotal*100)+"%");
+    }
+    private void pcsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_pcsStateChanged
+        int qpc=Integer.valueOf(pcs.getValue().toString());
+        if(qpc>11)
+        {   
+            nochangestate=true;
+            doz.setValue(Integer.parseInt(doz.getValue().toString())+qpc/12);
+            pcs.setValue(qpc-(qpc/12)*12);
+            nochangestate=false;
+        } 
+        fill();
+        returnprint.setEnabled(false);
+    }//GEN-LAST:event_pcsStateChanged
+
+    private void dozStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_dozStateChanged
+        fill();
+        returnprint.setEnabled(false);
+    }//GEN-LAST:event_dozStateChanged
+
+    private void currentinvMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_currentinvMouseClicked
+        nochangestate=true;
+        doz.setValue(0);
+        pcs.setValue(0);
+        nochangestate=false;
+    }//GEN-LAST:event_currentinvMouseClicked
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        try {
+            if(!conn.prepareStatement("SELECT * FROM Sell WHERE Invoice_no='"+Integer.parseInt(sinv.getText())+"'").executeQuery().next())
+                return;
+            SimpleDateFormat dtfrmat=new SimpleDateFormat("yyyy-MM-dd");
+            rs=conn.prepareStatement("SELECT * FROM CustomerProfile WHERE Customer_name='"+custnam.getText()+"'").executeQuery();
+            if(rs.next())
+            {conn.prepareStatement("UPDATE CustomerProfile SET Sale_amount='"+(rs.getDouble("Sale_amount")-Double.parseDouble(returnamt.getText()))+"', Due='"
+                                    +(rs.getDouble("Sale_amount")-Double.parseDouble(returnamt.getText())-rs.getDouble("Paid"))+"' WHERE Customer_name='"+custnam.getText()+"'").executeUpdate();
+             ResultSet rs2=conn.prepareStatement("SELECT * FROM Return WHERE Invoice_no='"+Integer.parseInt(sinv.getText())+"'").executeQuery();
+             if(rs2.next())
+             {  retfoundflag=true;
+                rs=conn.prepareStatement("SELECT * FROM CustomerProfile WHERE Customer_name='"+custnam.getText()+"'").executeQuery();
+                rs.next();
+                 conn.prepareStatement("UPDATE CustomerProfile SET Sale_amount='"+(rs.getDouble("Sale_amount")+rs2.getDouble("Gtotal"))+"', Due='"
+                                    +(rs.getDouble("Sale_amount")+rs2.getDouble("Gtotal")-rs.getDouble("Paid"))+"' WHERE Customer_name='"+custnam.getText()+"'").executeUpdate();}
+            }
+            boolean addinstock,shownoallocationdialogue=false;
+            if(JOptionPane.showConfirmDialog(this, "Do you want to add the item to the existing stock?", "Confirmation stock addition", ConfirmationCallback.YES_NO_OPTION)==0)
+                addinstock=true;
+            else
+                addinstock=false;
+            if(retfoundflag)
+            {   ResultSet rs2=conn.prepareStatement("SELECT * FROM Return WHERE Invoice_no='"+Integer.parseInt(sinv.getText())+"'").executeQuery(); 
+                if(addinstock)
+                {
+                    while (rs2.next()) {
+                        rs=conn.prepareStatement("SELECT * FROM Stock WHERE Item='"+rs2.getString("Item")+"'").executeQuery();
+                        if(rs.next())
+                        conn.prepareStatement("UPDATE Stock SET Qut_available='"+(rs.getLong("Qut_available")-rs2.getLong("Quantity"))+"' WHERE Item='"+rs2.getString("Item")+"'").executeUpdate();
+                    }
+                }
+                conn.prepareStatement("DELETE FROM Return WHERE Invoice_no='"+Integer.parseInt(sinv.getText())+"'").executeUpdate();
+            }
+            for (int i = 0; i < returntable.getRowCount(); i++) {
+                if(addinstock)
+                {rs=conn.prepareStatement("SELECT * FROM Stock WHERE Item='"+returntable.getValueAt(i, 1)+"'").executeQuery();
+                 if(rs.next())
+                     conn.prepareStatement("UPDATE Stock SET Qut_available='"+(rs.getLong("Qut_available")+quantifier(returntable.getValueAt(i, 3).toString()))+"' WHERE Item='"+returntable.getValueAt(i, 1)+"'").executeUpdate();
+                 else
+                     shownoallocationdialogue=true;
+                }
+                conn.prepareStatement("INSERT INTO Return (Invoice_no,Customer_name,[Date],Item,Rate,Quantity,Unit,Cost_price,Total,Discount,Gtotal) "
+                        + "VALUES('"+Integer.parseInt(sinv.getText())+"','"+custnam.getText()+"','"+dtfrmat.format(returndate.getDate())+"','"+returntable.getValueAt(i, 1)+"','"+
+                        Double.parseDouble(returntable.getValueAt(i, 2).toString())+"','"+quantifier(returntable.getValueAt(i, 3).toString())+"','PCS','"+
+                        (returncp.get((String)returntable.getValueAt(i, 1))*quantifier(returntable.getValueAt(i, 3).toString()))+"','"+
+                        returntable.getValueAt(i, 4)+"','"+Double.parseDouble(retdisc.getText().substring(0, retdisc.getText().indexOf('%')))+"','"+
+                        Double.parseDouble(returnamt.getText())+"')").executeUpdate();
+            }
+            JOptionPane.showMessageDialog(this, "Returned successfully"+(addinstock?" and stock allocation complete":""));
+            if(shownoallocationdialogue)
+            JOptionPane.showMessageDialog(this, "Some items were not allocated as item names were not present in stock");
+            returnprint.setEnabled(true);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void sinvFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_sinvFocusLost
+        returnitem();
+    }//GEN-LAST:event_sinvFocusLost
+
+    private void returnprintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnprintActionPerformed
+        Vector<String> columnNames = new Vector<>();
+        columnNames.add("No");
+        columnNames.add("Item name");
+        columnNames.add("Rate");
+        columnNames.add("Quantity");
+        columnNames.add("Total");       
+        DefaultTableModel dtm= (DefaultTableModel) returntable.getModel();
+        int rowcount=dtm.getRowCount();
+        DefaultTableModel dtm2= new DefaultTableModel(dtm.getDataVector(),columnNames);
+        for(int i=dtm2.getRowCount();i<(int)(Math.ceil(rowcount/18.0d))*18;i++)
+        dtm2.addRow(new Object[]{"","","","",""});
+            HashMap<String, Object> para= new HashMap<>();
+            para.put("Grandtotal",returnamt.getText());
+            para.put("Subtotal",returnstotal.getText());
+            para.put("discountper",retdisc.getText().substring(0, retdisc.getText().indexOf('%')));
+            para.put("discountamt",Format(Double.parseDouble(returnstotal.getText())-Double.parseDouble(returnamt.getText())));
+            para.put("custname",custnam.getText());
+            para.put("Company",rcompany);
+            para.put("Address",raddress);
+            para.put("City", rcity);
+            para.put("phone",rphone);
+            para.put("emailid",remailid);
+            para.put("Invoice_no", Format(Integer.parseInt(sinv.getText())));
+            SimpleDateFormat dtfrmat=new SimpleDateFormat("dd-MM-yyyy");
+            para.put("Date", dtfrmat.format(returndate.getDate()));
+            try {
+                url=new File(Sell.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+                url=url.substring(0, url.indexOf("Billosoft"));
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex);
+        }
+            para.put("logo",(url+"Billosoft\\print\\logo final.png"));
+            para.put("billosoft",(url+"Billosoft\\print\\Billosoft.png"));
+            try{
+             JasperPrint  printing = (JasperPrint) JasperFillManager.fillReport((url+"Billosoft\\print\\Return_receipt.jasper")
+                     ,para,new JRTableModelDataSource(dtm2));
+             JasperViewer jaspervier=new JasperViewer(printing,false);//disappearing the save buton due to some font style problems
+             ((javax.swing.JButton)((JRViewerToolbar)((JRViewer)((javax.swing.JPanel)jaspervier.getContentPane().getComponents()[0]).getComponent(0)).getComponent(0)).getComponent(0)).setVisible(false);
+             jaspervier.setVisible(true);
+            }
+            catch(Exception e)
+            {
+                JOptionPane.showMessageDialog(null, e);
+            }
+            dtm.setRowCount(rowcount);
+    }//GEN-LAST:event_returnprintActionPerformed
+
+    private void returnalertMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_returnalertMouseClicked
+        sinv.setText(ivno.getText());
+        returnitem();
+        jTabbedPane1.setSelectedIndex(2);
+    }//GEN-LAST:event_returnalertMouseClicked
 
     /**
      * @param args the command line arguments
@@ -1605,23 +2234,30 @@ public void findinv()
     private javax.swing.JButton clear;
     private javax.swing.JLabel complab2;
     private javax.swing.JButton confirm;
+    private javax.swing.JTable currentinv;
+    private javax.swing.JLabel custnam;
     public javax.swing.JTextField custname;
     public javax.swing.JTextField custname2;
-    private javax.swing.JRadioButton customer;
+    public javax.swing.JRadioButton customer;
     private com.toedter.calendar.JDateChooser date;
     private com.toedter.calendar.JDateChooser date1;
     private javax.swing.JButton delete;
+    private javax.swing.JLabel disc;
     private javax.swing.JLabel discamt;
     private javax.swing.JTextField discpercent;
+    private javax.swing.JSpinner doz;
     private javax.swing.JLabel due;
     private javax.swing.JLabel emailid;
     private javax.swing.JLabel emailid1;
     private javax.swing.JButton findinvoice;
     private javax.swing.JLabel grandtotal;
+    private javax.swing.JLabel gross;
     private javax.swing.JTextField itemname;
     private javax.swing.JTable itemtable;
     public javax.swing.JTextField ivno;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1633,6 +2269,15 @@ public void findinv()
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1640,17 +2285,24 @@ public void findinv()
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     public javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
     private javax.swing.JComboBox<String> paymode;
     private javax.swing.JLabel payno;
     private javax.swing.JTable paytable;
+    private javax.swing.JSpinner pcs;
+    private javax.swing.JLabel pen;
     private javax.swing.JLabel phone;
     private javax.swing.JLabel phone1;
     private javax.swing.JButton print;
@@ -1659,6 +2311,15 @@ public void findinv()
     private javax.swing.JLabel qutshow;
     private javax.swing.JFormattedTextField rate;
     private javax.swing.JCheckBox receipt;
+    private javax.swing.JLabel retdisc;
+    private javax.swing.JLabel returnalert;
+    private javax.swing.JLabel returnamt;
+    private com.toedter.calendar.JDateChooser returndate;
+    private javax.swing.JButton returnprint;
+    private javax.swing.JLabel returnstotal;
+    private javax.swing.JTable returntable;
+    public javax.swing.JTextField sinv;
+    private javax.swing.JLabel stotal;
     private javax.swing.JFormattedTextField total;
     private javax.swing.JLabel totallabel;
     private javax.swing.JTextField txnno;

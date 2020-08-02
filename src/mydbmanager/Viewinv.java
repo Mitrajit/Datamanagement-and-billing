@@ -92,6 +92,24 @@ public Viewinv(Connection con,Sell obj,ArrayList<JFrame> frm)
         }
         jLabel4.setText(Format(total)); 
     }
+    private void summation2()
+    {
+        double total=0.0;
+        int rowcount=jTable3.getSelectedRowCount();
+        //System.out.println(rowcount);
+        if(rowcount==0){
+            rowcount=jTable3.getRowCount();
+            for(int i=0;i<rowcount;i++)
+            total+=Double.parseDouble(jTable3.getValueAt(i, 4).toString());
+        }
+        else
+        { int rowind[]=jTable3.getSelectedRows();
+            for(int i=0;i<rowcount;i++)
+            {//System.out.println(rowind[i]);    
+             total+=Double.parseDouble(jTable3.getValueAt(rowind[i], 4).toString());}
+        }
+        jLabel7.setText(Format(total)); 
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -103,6 +121,7 @@ public Viewinv(Connection con,Sell obj,ArrayList<JFrame> frm)
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         buttonGroup2 = new javax.swing.ButtonGroup();
+        buttonGroup3 = new javax.swing.ButtonGroup();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -126,10 +145,22 @@ public Viewinv(Connection con,Sell obj,ArrayList<JFrame> frm)
         jButton1 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable3 = new javax.swing.JTable();
+        jRadioButton7 = new javax.swing.JRadioButton();
+        jRadioButton8 = new javax.swing.JRadioButton();
+        jRadioButton9 = new javax.swing.JRadioButton();
+        fromdate1 = new com.toedter.calendar.JDateChooser();
+        jLabel5 = new javax.swing.JLabel();
+        todate1 = new com.toedter.calendar.JDateChooser();
+        show1 = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Sales report");
-        setIconImage(ScaleImage.scale("Billosoft.png", 16, 16).getImage());
+        setIconImage(ScaleImage.scale("Billosoft.png", 96, 96).getImage());
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -381,6 +412,143 @@ public Viewinv(Connection con,Sell obj,ArrayList<JFrame> frm)
 
         jTabbedPane1.addTab("Item wise sales", jPanel2);
 
+        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Invoice number", "Description", "Rate", "Quantity", "Total"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable3.setName("No data"); // NOI18N
+        jTable3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable3MouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(jTable3);
+        if (jTable3.getColumnModel().getColumnCount() > 0) {
+            jTable3.getColumnModel().getColumn(1).setPreferredWidth(200);
+        }
+
+        buttonGroup3.add(jRadioButton7);
+        jRadioButton7.setSelected(true);
+        jRadioButton7.setText("Today");
+        jRadioButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton7ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup3.add(jRadioButton8);
+        jRadioButton8.setText("Yesterday");
+        jRadioButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton8ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup3.add(jRadioButton9);
+        jRadioButton9.setText("Custom");
+        jRadioButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton9ActionPerformed(evt);
+            }
+        });
+
+        fromdate1.setDate(new Date());
+        fromdate1.setDateFormatString("dd-MMM-yy");
+        fromdate1.setEnabled(false);
+        ((JTextFieldDateEditor)fromdate.getDateEditor()).setEditable(false);
+
+        jLabel5.setText("to");
+
+        todate1.setDate(new Date());
+        todate1.setDateFormatString("dd-MMM-yy");
+        todate1.setEnabled(false);
+        ((JTextFieldDateEditor)todate.getDateEditor()).setEditable(false);
+
+        show1.setText("Show");
+        show1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                show1ActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI Symbol", 1, 14)); // NOI18N
+        jLabel6.setText("Total");
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel7.setText("0.00");
+        jLabel7.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(jRadioButton7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jRadioButton8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioButton9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(fromdate1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(todate1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(show1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(72, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel6)
+                .addGap(26, 26, 26)
+                .addComponent(jLabel7)
+                .addGap(28, 28, 28))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jRadioButton7)
+                            .addComponent(jRadioButton8)
+                            .addComponent(jRadioButton9))
+                        .addComponent(todate1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(fromdate1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(show1)))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7))
+                .addGap(15, 15, 15))
+        );
+
+        jTabbedPane1.addTab("Returns", jPanel3);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -430,18 +598,12 @@ public Viewinv(Connection con,Sell obj,ArrayList<JFrame> frm)
             DefaultTableModel dt = (DefaultTableModel) jTable1.getModel();
             dt.setRowCount(0);
             int inv=0;
-            double total=0d;
             while(rs.next()){
                 if(inv!=rs.getInt("Invoice_no"))            { 
-                    if(jTable1.getRowCount()>0)
-                        jTable1.setValueAt(Format(total), jTable1.getRowCount()-1, 4);
-                    total=rs.getDouble("Total")*(1-rs.getDouble("Discount")/100d);
-                dt.addRow(new Object[]{Format(rs.getInt("Invoice_no")),rs.getString("Customer_name"),print.format(rs.getDate("Date")),"at "+rs.getDouble("Discount")+"% off"});
-                inv=rs.getInt("Invoice_no");                }       
-                else
-                    total+=rs.getDouble("Total")*(1-rs.getDouble("Discount")/100d);}
-            if(jTable1.getRowCount()>0)
-                jTable1.setValueAt(Format(total), jTable1.getRowCount()-1, 4);
+                dt.addRow(new Object[]{Format(rs.getInt("Invoice_no")),rs.getString("Customer_name"),print.format(rs.getDate("Date")),"at "+rs.getDouble("Discount")+"% off",Format(rs.getDouble("Gtotal"))});
+                inv=rs.getInt("Invoice_no");
+                }       
+                }
             summation();
         }
         
@@ -465,6 +627,7 @@ public Viewinv(Connection con,Sell obj,ArrayList<JFrame> frm)
             sell.setState(Frame.NORMAL);
              else
             sell.requestFocus();
+            sell.jTabbedPane1.setSelectedIndex(0);
             }
         }
        else if(evt.getClickCount()==1&&!evt.isConsumed())
@@ -527,15 +690,24 @@ public Viewinv(Connection con,Sell obj,ArrayList<JFrame> frm)
             rs=conn.prepareStatement("SELECT * FROM Sell WHERE [Date] BETWEEN '"+entry.format(fromdate2.getDate())+"' AND '"+entry.format(todate2.getDate())+"'").executeQuery();
             ArrayList <String> allitems  = new ArrayList <>();
             HashMap <String,Integer> sold= new HashMap<>();
+            ResultSet rs2;
             while(rs.next()){
+                rs2=conn.prepareStatement("SELECT * FROM Return WHERE Invoice_no='"+rs.getInt("Invoice_no")+"' AND Item='"+rs.getString("Item")+"'").executeQuery();
                 if(allitems.contains(rs.getString("Item")))
-                    sold.replace(rs.getString("Item"), sold.get(rs.getString("item"))+rs.getInt("Quantity"));
+                    if(rs2.next())
+                    sold.replace(rs.getString("Item"), sold.get(rs.getString("item"))+rs.getInt("Quantity")-rs2.getInt("Quantity"));
+                    else
+                    sold.replace(rs.getString("Item"), sold.get(rs.getString("item"))+rs.getInt("Quantity"));                        
                 else
-                {allitems.add(rs.getString("Item"));
-                 sold.put(rs.getString("Item"), rs.getInt("Quantity"));
+                {   allitems.add(rs.getString("Item"));
+                    if(rs2.next())
+                    sold.put(rs.getString("Item"), rs.getInt("Quantity")-rs2.getInt("Quantity"));
+                    else 
+                    sold.put(rs.getString("Item"), rs.getInt("Quantity"));
                 }
-            }
+            }            
             DefaultTableModel tm= (DefaultTableModel) jTable2.getModel();
+            tm.setRowCount(0);
             for(String i: allitems)
             {
                 rs=conn.prepareStatement("SELECT * FROM Stock WHERE Item='"+i+"'").executeQuery();
@@ -555,6 +727,94 @@ public Viewinv(Connection con,Sell obj,ArrayList<JFrame> frm)
         else
             frames.add(this);
     }//GEN-LAST:event_formWindowGainedFocus
+
+    private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
+        EventQueue.invokeLater(new Runnable() {
+           @Override
+           public void run() {
+       int selection=jTable3.getSelectedRow();
+       if(evt.getClickCount()==2&&!evt.isConsumed())
+        {   evt.consume();
+        if(!jTable3.getValueAt(selection, 0).equals("")){
+            sell.sinv.setText((String) jTable3.getValueAt(selection, 0));
+            sell.returnitem();
+            if(!sell.isVisible())
+            sell.setVisible(true);
+            else if(sell.getState()==Frame.ICONIFIED)
+            sell.setState(Frame.NORMAL);
+             else
+            sell.requestFocus();
+            sell.jTabbedPane1.setSelectedIndex(2);
+            }
+        }
+       else if(evt.getClickCount()==1&&!evt.isConsumed())
+       {
+           try{
+               evt.consume();
+           
+           DefaultTableModel tm= (DefaultTableModel) jTable3.getModel();
+           
+           if(selection==jTable3.getRowCount()-1||!jTable3.getValueAt(selection+1, 0).toString().equals("")){
+               if(!jTable3.getValueAt(selection, 0).equals("")){
+           rs=conn.prepareStatement("SELECT * FROM Return WHERE Invoice_no='"+jTable3.getValueAt(selection, 0)+"'").executeQuery();
+           while(rs.next()){
+//               if(last)
+//                   tm.addRow(new Object[]{"",rs.getString("Item"),Format(rs.getDouble("Rate")),quantifier(rs.getInt("Quantity")),Format(rs.getDouble("Total"))});
+//               else
+               tm.insertRow(++selection, new Object[]{"",rs.getString("Item"),Format(rs.getDouble("Rate")),quantifier(rs.getInt("Quantity")),Format(rs.getDouble("Total"))});
+           }}}
+           else
+           {
+               if(!jTable3.getValueAt(selection, 0).equals("")){
+               while(selection!=jTable3.getRowCount()-1&&jTable3.getValueAt(selection+1, 0).equals(""))
+                   tm.removeRow(selection+1);}
+           }
+       }catch(Exception e){JOptionPane.showMessageDialog(null, e);}
+       }
+           }
+       });
+    }//GEN-LAST:event_jTable3MouseClicked
+
+    private void jRadioButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton7ActionPerformed
+        fromdate1.setEnabled(false);
+        fromdate1.setDate(dt);
+        todate1.setEnabled(false);
+        todate1.setDate(dt);
+    }//GEN-LAST:event_jRadioButton7ActionPerformed
+
+    private void jRadioButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton8ActionPerformed
+        fromdate1.setEnabled(false);
+        fromdate1.setDate(new Date(dt.getYear(), dt.getMonth(), dt.getDate()-1));
+        todate1.setEnabled(false);
+        todate1.setDate(new Date(dt.getYear(), dt.getMonth(), dt.getDate()-1));
+    }//GEN-LAST:event_jRadioButton8ActionPerformed
+
+    private void jRadioButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton9ActionPerformed
+        fromdate1.setEnabled(true);
+        fromdate1.setDate(new Date(dt.getYear(), dt.getMonth()-1, dt.getDate()));
+        todate1.setEnabled(true);
+        todate1.setDate(dt);
+    }//GEN-LAST:event_jRadioButton9ActionPerformed
+
+    private void show1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_show1ActionPerformed
+        try{
+            String sql="SELECT * FROM Return WHERE [Date] BETWEEN '"+entry.format(fromdate1.getDate())+"' AND '"+entry.format(todate1.getDate())+"'";
+            rs=conn.prepareStatement(sql).executeQuery();
+            DefaultTableModel dt = (DefaultTableModel) jTable3.getModel();
+            dt.setRowCount(0);
+            int inv=0;
+            while(rs.next()){
+                if(inv!=rs.getInt("Invoice_no"))            { 
+                dt.addRow(new Object[]{Format(rs.getInt("Invoice_no")),rs.getString("Customer_name"),print.format(rs.getDate("Date")),"at "+rs.getDouble("Discount")+"% off",Format(rs.getDouble("Gtotal"))});
+                inv=rs.getInt("Invoice_no");
+                }       
+                }
+            summation2();
+        }
+        
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, e);}
+    }//GEN-LAST:event_show1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -594,28 +854,41 @@ public Viewinv(Connection con,Sell obj,ArrayList<JFrame> frm)
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.ButtonGroup buttonGroup3;
     private com.toedter.calendar.JDateChooser fromdate;
+    private com.toedter.calendar.JDateChooser fromdate1;
     private com.toedter.calendar.JDateChooser fromdate2;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JRadioButton jRadioButton4;
     private javax.swing.JRadioButton jRadioButton5;
     private javax.swing.JRadioButton jRadioButton6;
+    private javax.swing.JRadioButton jRadioButton7;
+    private javax.swing.JRadioButton jRadioButton8;
+    private javax.swing.JRadioButton jRadioButton9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     public javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
+    private javax.swing.JTable jTable3;
     private javax.swing.JButton show;
+    private javax.swing.JButton show1;
     private com.toedter.calendar.JDateChooser todate;
+    private com.toedter.calendar.JDateChooser todate1;
     private com.toedter.calendar.JDateChooser todate2;
     // End of variables declaration//GEN-END:variables
 }

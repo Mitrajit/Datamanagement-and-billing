@@ -86,7 +86,7 @@ public class InputOutput extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Input/Output");
-        setIconImage(ScaleImage.scale("Billosoft.png", 16, 16).getImage());
+        setIconImage(ScaleImage.scale("Billosoft.png", 96, 96).getImage());
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -129,7 +129,15 @@ public class InputOutput extends javax.swing.JFrame {
             new String [] {
                 "Type", "Date", "Description", "Total"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         inouttable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 inouttableMouseReleased(evt);

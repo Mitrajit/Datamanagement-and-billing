@@ -19,6 +19,8 @@ import java.sql.SQLException;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -58,29 +60,12 @@ public class LoginPage extends javax.swing.JFrame implements ActionListener{
         jButton1.getActionMap().put("login", loginaction);
     }
     private void findloc(){
-        try {
-            FileReader fr= new FileReader("path.txt");
-            BufferedReader br = new BufferedReader(fr);
-            jTextField1.setText(br.readLine());
-            fr.close();
-        } catch (FileNotFoundException ex) {
-            loc();
-        } catch (IOException ex) {
-            Logger.getLogger(LoginPage.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Preferences prefs = Preferences.userNodeForPackage(LoginPage.class);
+        jTextField1.setText(prefs.get("path","Enter the path to database"));
     }
     private void loc(){
-        try {
-            FileWriter fw= new FileWriter("path.txt",false);
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter pw= new PrintWriter(bw);
-            pw.println(jTextField1.getText());
-            pw.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(LoginPage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(LoginPage.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Preferences prefs = Preferences.userNodeForPackage(LoginPage.class);
+        prefs.put("path", jTextField1.getText());
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -110,7 +95,7 @@ public class LoginPage extends javax.swing.JFrame implements ActionListener{
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Billosoft login page");
         setBackground(new java.awt.Color(102, 102, 102));
-        setIconImage(ScaleImage.scale("Billosoft.png", 16, 16).getImage());
+        setIconImage(ScaleImage.scale("Billosoft.png", 96, 96).getImage());
         setUndecorated(true);
         setResizable(false);
 
@@ -144,7 +129,6 @@ public class LoginPage extends javax.swing.JFrame implements ActionListener{
     pass.setBackground(new java.awt.Color(102, 102, 102));
     pass.setFont(new java.awt.Font("Dialog", 0, 13)); // NOI18N
     pass.setForeground(new java.awt.Color(221, 221, 221));
-    pass.setText("admin");
     pass.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(221, 221, 221), 1, true));
     pass.setCaretColor(new java.awt.Color(153, 255, 255));
     pass.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));

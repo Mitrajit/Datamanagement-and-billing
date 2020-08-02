@@ -115,7 +115,7 @@ public final class InputPurchase extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Input purchase");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setIconImage(ScaleImage.scale("Billosoft.png", 16, 16).getImage());
+        setIconImage(ScaleImage.scale("Billosoft.png", 96, 96).getImage());
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -255,50 +255,48 @@ public final class InputPurchase extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(43, 43, 43)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(31, 31, 31)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(18, 18, 18))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
                                 .addComponent(jLabel8)
-                                .addGap(3, 3, 3)))
+                                .addGap(3, 3, 3))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 136, Short.MAX_VALUE)
                                 .addComponent(jLabel7))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel2)))
+                            .addComponent(jTextField1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jTextField5)
+                                .addGap(56, 56, 56)
                                 .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jFormattedTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
+                                .addGap(20, 20, 20)
+                                .addComponent(jLabel3)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addGap(14, 14, 14)
                                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(28, 28, 28)
-                                        .addComponent(jLabel3)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jSpinner1)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)))
+                                        .addGap(12, 12, 12)))
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel4)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jFormattedTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)))))
                         .addGap(20, 20, 20))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(30, 30, 30)
@@ -380,7 +378,8 @@ public final class InputPurchase extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        Addrow(new Object[]{jLabel5.getText(),jTextField1.getText(),jFormattedTextField2.getText(),jSpinner1.getValue()+" "+jTextField2.getText(),jFormattedTextField1.getText()});
+        if(!jTextField1.getText().equals(""))
+        {Addrow(new Object[]{jLabel5.getText(),jTextField1.getText(),jFormattedTextField2.getText(),jSpinner1.getValue()+" "+jTextField2.getText(),jFormattedTextField1.getText()});
         jTextField1.setText("");
         jFormattedTextField1.setText("0.00");
         jFormattedTextField2.setText("0.00");
@@ -389,7 +388,7 @@ public final class InputPurchase extends javax.swing.JFrame {
         nf.setMinimumIntegerDigits(4);
         nf.setGroupingUsed(false);
         summation();
-        jLabel5.setText(nf.format(Integer.parseInt(jTable1.getValueAt(jTable1.getRowCount()-1,0).toString())+1));
+        jLabel5.setText(nf.format(Integer.parseInt(jTable1.getValueAt(jTable1.getRowCount()-1,0).toString())+1));}
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public String Format(double a){
@@ -478,20 +477,31 @@ public final class InputPurchase extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        if(jTextField5.getText().equals("")||jTable1.getRowCount()==0)
+            return;
         try
         {
             SimpleDateFormat dtfrmat=new SimpleDateFormat("yyyy-MM-dd");
             for(int i=0;i<jTable1.getRowCount();i++){
-            String sql="INSERT INTO Item_List (Transportation,[Date],Item_name,Rate,Quantity,Unit,Total) VALUES ('"+jTextField5.getText()+"',#"+dtfrmat.format(jDateChooser1.getDate())+"#,'"+jTable1.getValueAt(i, 1).toString()+"','"+Double.parseDouble(jTable1.getValueAt(i,2).toString())+"','"+Double.parseDouble(jTable1.getValueAt(i, 3).toString().substring(0, jTable1.getValueAt(i, 3).toString().indexOf(' ')))+"','"+jTextField2.getText()+"','"+Double.parseDouble(jTable1.getValueAt(i, 4).toString())+"')";
+            String sql="INSERT INTO Item_List (Transportation,[Date],Item_name,Rate,Quantity,Unit,Total) VALUES ('"+jTextField5.getText()+"','"+
+                    dtfrmat.format(jDateChooser1.getDate())+"','"+jTable1.getValueAt(i, 1).toString()+"','"+Double.parseDouble(
+                    jTable1.getValueAt(i,2).toString())+"','"+Double.parseDouble(jTable1.getValueAt(i, 3).toString()
+                    .substring(0, jTable1.getValueAt(i, 3).toString().indexOf(' ')))+"','"+jTextField2.getText()+"','"+
+                    Double.parseDouble(jTable1.getValueAt(i, 4).toString())+"')";
             pst=conn.prepareStatement(sql);
-           if( pst.executeUpdate()==1){
-               JOptionPane.showMessageDialog(null, "Added successfully");
-               this.dispose();
-           }
-            
+            pst.executeUpdate();  
             }
+             JOptionPane.showMessageDialog(null, "Added successfully");
+               DefaultTableModel tm = (DefaultTableModel) jTable1.getModel();
+               tm.setRowCount(0);
+               jTextField5.setText("");
+               jTextField1.setText("");
+               jFormattedTextField1.setText("0.00");
+               jFormattedTextField2.setText("0.00");
+               jLabel9.setText("0.00");
+               jDateChooser1.setDate(new Date());
         }
-        catch(NumberFormatException | SQLException e)
+        catch(Exception e)
         {
            JOptionPane.showMessageDialog(null, e);
                     

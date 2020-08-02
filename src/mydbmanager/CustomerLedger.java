@@ -80,8 +80,8 @@ public class CustomerLedger extends javax.swing.JFrame {
             tm.setRowCount(0);
             while(rs.next())
             {
-                tm.addRow(new Object[]{rs.getInt("ID"),rs.getString("Customer_name"),rs.getString("Address"),rs.getDouble("Sale_amount"),
-                    rs.getDouble("Paid"),rs.getDouble("Due")});
+                tm.addRow(new Object[]{rs.getInt("ID"),rs.getString("Customer_name"),rs.getString("Address"),Format(rs.getDouble("Sale_amount")),
+                    Format(rs.getDouble("Paid")),Format(rs.getDouble("Due"))});
             }
             for(int i=0;i<jTable1.getRowCount();i++){
             sql="SELECT * FROM Sell WHERE Customer_name='"+jTable1.getValueAt(i, 1)+"'";
@@ -89,6 +89,10 @@ public class CustomerLedger extends javax.swing.JFrame {
             double total=0d;
             while(rs.next())
                 total+=rs.getDouble("Cost_price");
+            sql="SELECT * FROM Return WHERE Customer_name='"+jTable1.getValueAt(i, 1)+"'";
+            rs=conn.prepareStatement(sql).executeQuery();
+            while(rs.next())
+                total-=rs.getDouble("Cost_price");
             cp.add(total); }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex);
@@ -138,7 +142,7 @@ public class CustomerLedger extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Customer Ledger");
-        setIconImage(ScaleImage.scale("Billosoft.png", 16, 16).getImage());
+        setIconImage(ScaleImage.scale("Billosoft.png", 96, 96).getImage());
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -282,11 +286,11 @@ public class CustomerLedger extends javax.swing.JFrame {
                 try {
                     int sel=jTable1.getSelectedRow();
                     idlabel1.setText(Format((int)jTable1.getValueAt(sel, 0)));
-                    amtsold1.setText(Format((double)jTable1.getValueAt(sel, 3)));
-                    amtpaid1.setText(Format((double)jTable1.getValueAt(sel, 4)));
-                    amtdue1.setText(Format((double)jTable1.getValueAt(sel, 5)));
+                    amtsold1.setText(Format(Double.parseDouble(jTable1.getValueAt(sel, 3).toString())));
+                    amtpaid1.setText(Format(Double.parseDouble(jTable1.getValueAt(sel, 4).toString())));
+                    amtdue1.setText(Format(Double.parseDouble(jTable1.getValueAt(sel, 5).toString())));
                     ctc.setText(Format(cp.get(sel)));
-                    double pp=((double)jTable1.getValueAt(sel, 3)-cp.get(sel))*100/cp.get(sel);
+                    double pp=(Double.parseDouble(jTable1.getValueAt(sel, 3).toString())-cp.get(sel))*100/cp.get(sel);
                     ppercent.setText(Format(pp)+"%");
                     pst=conn.prepareStatement("SELECT * FROM CustomerProfile WHERE Customer_name='"+jTable1.getValueAt(sel, 1)+"'");
                     rs=pst.executeQuery();
@@ -299,7 +303,7 @@ public class CustomerLedger extends javax.swing.JFrame {
                         ppercent.setForeground(Color.red);
                     else
                         ppercent.setForeground(Color.black);
-                    chart((double)jTable1.getValueAt(sel, 3),cp.get(sel),(double)jTable1.getValueAt(sel, 4));
+                    chart(Double.parseDouble(jTable1.getValueAt(sel, 3).toString()),cp.get(sel),Double.parseDouble(jTable1.getValueAt(sel, 4).toString()));
                 } catch (SQLException ex) {
                     Logger.getLogger(CustomerLedger.class.getName()).log(Level.SEVERE, null, ex);
                 }

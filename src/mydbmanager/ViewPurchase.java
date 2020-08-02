@@ -8,6 +8,7 @@ package mydbmanager;
 
 import com.toedter.calendar.JTextFieldDateEditor;
 import java.awt.EventQueue;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -28,6 +29,8 @@ import javax.swing.JFrame;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import net.sf.jasperreports.engine.data.JRTableModelDataSource;
+import net.sf.jasperreports.swing.JRViewer;
+import net.sf.jasperreports.swing.JRViewerToolbar;
 
 /**
  *
@@ -145,7 +148,7 @@ public class ViewPurchase extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("View Purchase");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setIconImage(ScaleImage.scale("Billosoft.png", 16, 16).getImage());
+        setIconImage(ScaleImage.scale("Billosoft.png", 96, 96).getImage());
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -179,6 +182,7 @@ public class ViewPurchase extends javax.swing.JFrame {
         jLabel2.setText("to");
 
         jButton2.setText("Print");
+        jButton2.setEnabled(false);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -299,7 +303,7 @@ public class ViewPurchase extends javax.swing.JFrame {
 
             public void editingStopped(ChangeEvent e) {
                 checkTable();
-                jLabel1.setVisible(true);
+                jLabel1.setVisible(true); jButton2.setEnabled(false);
             }
         });
         jScrollPane1.setViewportView(jTable1);
@@ -394,11 +398,13 @@ public class ViewPurchase extends javax.swing.JFrame {
             pst=conn.prepareStatement(sql);
             rs=pst.executeQuery();
             dtfrmat=new SimpleDateFormat("dd-MM-yyyy");
-            while(rs.next())
+            if(rs.next()){
+                jButton2.setEnabled(true);
+            do
             {
                 Object[] row={Format(rs.getInt("ID")),rs.getString("Transportation"),dtfrmat.format(rs.getDate("Date")),rs.getString("Item_name"),Format(rs.getDouble("Rate")),rs.getDouble("Quantity")+" "+rs.getString("unit"),Format(rs.getDouble("Total"))};
                 tm.addRow(row);
-            }
+            }while(rs.next());}
 //            ResultSetMetaData rsmd=rs.getMetaData();
 //            System.out.println(rsmd.getColumnLabel(1)+"   "+rsmd.getColumnLabel(2)+"   "+rsmd.getColumnLabel(3)+"   "+rsmd.getColumnLabel(4)+"   "+
 //                    rsmd.getColumnLabel(5)+"   "+rsmd.getColumnLabel(6)+"   "+rsmd.getColumnLabel(7)+"\n"+rsmd.getColumnTypeName(1)+"\t"+rsmd.getColumnTypeName(2)+"\t"+rsmd.getColumnTypeName(3)+"\t"+rsmd.getColumnTypeName(4)+"\t"+rsmd.getColumnTypeName(5)+"\t"+rsmd.getColumnTypeName(6)+"\t"+rsmd.getColumnTypeName(7));
@@ -431,7 +437,7 @@ public class ViewPurchase extends javax.swing.JFrame {
         jTable1.getSelectionModel().clearSelection();
         summation();
     }//GEN-LAST:event_jPanel3MouseClicked
-
+String url,url2;
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         
@@ -441,21 +447,21 @@ public class ViewPurchase extends javax.swing.JFrame {
             DefaultTableModel dtm = (DefaultTableModel)jTable1.getModel();
             
             HashMap<String, Object> para= new HashMap<>();
-            para.put("logo",LoginPage.class.getResource("logo final.png").toExternalForm().substring(6).replaceAll("%20", " "));
-            para.put("billosoft",LoginPage.class.getResource("Billosoft.png").toExternalForm().substring(6).replaceAll("%20", " "));
-            JasperCompileManager.compileReportToFile(LoginPage.class.getResource("Purchasereport.jrxml").toExternalForm().substring(6).replaceAll("%20", " "),
-                    LoginPage.class.getResource("Purchasereport.jasper").toExternalForm().substring(6).replaceAll("%20", " "));
-             JasperPrint  printing = (JasperPrint) JasperFillManager.fillReport(LoginPage.class.getResource("Purchasereport.jasper").toExternalForm().substring(6).replaceAll("%20", " "),para,new JRTableModelDataSource(dtm));
-            JasperViewer.viewReport(printing,false);
-                
-//            JasperDesign jasdi=JRXmlLoader.load("E:\\\\Data entry_Project\\\\MyDBmanager\\\\src\\\\mydbmanager\\\\Purchasereport.jrxml");
-//            String sql="SELECT ID, Transportation, Date, Item_name, Rate, Quantity, Total FROM Item_List";
-//            JRDesignQuery newQuery=new JRDesignQuery ();
-//            newQuery.setText (sql);
-//            jasdi.setQuery(newQuery);
-//            JasperReport js=JasperCompileManager.compileReport(jasdi);
-//            JasperPrint jp=JasperFillManager.fillReport(js,null,conn);
-//            JasperViewer.viewReport(jp,false);
+            try {
+                url=new File(ViewPurchase.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+                url=url.substring(0, url.indexOf("Billosoft"));
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex);
+        }  
+            jTable1.clearSelection();
+            summation();
+            para.put("gtotal",jLabel4.getText());
+            para.put("logo",url+"Billosoft\\print\\logo final.png");
+            para.put("billosoft",url+"Billosoft\\print\\Billosoft.png");
+            JasperPrint  printing = (JasperPrint) JasperFillManager.fillReport((url+"Billosoft\\print\\Purchasereport.jasper"),para,new JRTableModelDataSource(dtm));
+            JasperViewer jaspervier=new JasperViewer(printing,false);//disappearing the save button due to some font style problems
+             ((javax.swing.JButton)((JRViewerToolbar)((JRViewer)((javax.swing.JPanel)jaspervier.getContentPane().getComponents()[0]).getComponent(0)).getComponent(0)).getComponent(0)).setVisible(false);
+             jaspervier.setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(rootPane, e);

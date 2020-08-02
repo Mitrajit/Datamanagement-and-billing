@@ -131,7 +131,7 @@ public class StockEntry extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Stock management");
-        setIconImage(ScaleImage.scale("Billosoft.png", 16, 16).getImage());
+        setIconImage(ScaleImage.scale("Billosoft.png", 96, 96).getImage());
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -151,6 +151,8 @@ public class StockEntry extends javax.swing.JFrame {
         jLabel3.setText("Quantity");
 
         jLabel11.setText("(optional)");
+
+        qut.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
 
         Unit.setEditable(false);
         Unit.setText("DOZ");
@@ -232,7 +234,7 @@ public class StockEntry extends javax.swing.JFrame {
 
         jLabel8.setText("Group name");
 
-        qutpc.setModel(new javax.swing.SpinnerNumberModel());
+        qutpc.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
 
         minsp.setText("0.00");
         minsp.addFocusListener(new java.awt.event.FocusAdapter() {

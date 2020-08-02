@@ -65,6 +65,7 @@ public class ProfitnLoss extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
+        jLabel9 = new javax.swing.JLabel();
         fromdate = new com.toedter.calendar.JDateChooser();
         todate = new com.toedter.calendar.JDateChooser();
         jRadioButton1 = new javax.swing.JRadioButton();
@@ -76,24 +77,28 @@ public class ProfitnLoss extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         slinc = new javax.swing.JLabel();
-        slincpercent = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         tinc = new javax.swing.JLabel();
         tincpercent = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         cogs = new javax.swing.JLabel();
-        cogspercent = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         tcogs = new javax.swing.JLabel();
         tcogspercent = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         grossprofit = new javax.swing.JLabel();
         grossprofitpercent = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        retsale = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        retcogs = new javax.swing.JLabel();
+
+        jLabel9.setText("jLabel9");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Profit and Loss");
-        setIconImage(ScaleImage.scale("Billosoft.png", 16, 16).getImage());
+        setIconImage(ScaleImage.scale("Billosoft.png", 96, 96).getImage());
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -155,8 +160,6 @@ public class ProfitnLoss extends javax.swing.JFrame {
 
         slinc.setText("0.00");
 
-        slincpercent.setText("100%");
-
         jLabel7.setText("Total income");
 
         tinc.setText("0.00");
@@ -169,19 +172,25 @@ public class ProfitnLoss extends javax.swing.JFrame {
 
         cogs.setText("0.00");
 
-        cogspercent.setText("0%");
-
         jLabel14.setText("Total cost of goods sold");
 
         tcogs.setText("0.00");
 
-        tcogspercent.setText("0%");
+        tcogspercent.setText("0.00%");
 
         jLabel17.setText("GROSS PROFIT");
 
         grossprofit.setText("0.00");
 
-        grossprofitpercent.setText("Ppercent");
+        grossprofitpercent.setText("0.00%");
+
+        jLabel5.setText("- Return");
+
+        retsale.setText("0.00");
+
+        jLabel12.setText("- Return cost of goods");
+
+        retcogs.setText("0.00");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -208,8 +217,8 @@ public class ProfitnLoss extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(89, 89, 89)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(92, 92, 92)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(56, 56, 56)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -220,7 +229,9 @@ public class ProfitnLoss extends javax.swing.JFrame {
                                 .addGap(10, 10, 10)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel4)
-                                    .addComponent(jLabel11)))
+                                    .addComponent(jLabel11)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel12)))
                             .addComponent(jLabel14)
                             .addComponent(jLabel17))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -229,11 +240,11 @@ public class ProfitnLoss extends javax.swing.JFrame {
                             .addComponent(tinc, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(slinc, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(tcogs, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(grossprofit, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addComponent(grossprofit, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(retsale, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(retcogs, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addGap(89, 89, 89)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(slincpercent)
-                            .addComponent(cogspercent)
                             .addComponent(tincpercent)
                             .addComponent(tcogspercent)
                             .addComponent(grossprofitpercent))))
@@ -261,9 +272,12 @@ public class ProfitnLoss extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(slincpercent)
                     .addComponent(slinc))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(4, 4, 4)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(retsale))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(tinc)
@@ -273,8 +287,11 @@ public class ProfitnLoss extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
-                    .addComponent(cogs)
-                    .addComponent(cogspercent))
+                    .addComponent(cogs))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(retcogs))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
@@ -285,7 +302,7 @@ public class ProfitnLoss extends javax.swing.JFrame {
                     .addComponent(jLabel17)
                     .addComponent(grossprofit)
                     .addComponent(grossprofitpercent))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         pack();
@@ -316,26 +333,38 @@ public class ProfitnLoss extends javax.swing.JFrame {
         todate.setDate(dt);
     }//GEN-LAST:event_jRadioButton3ActionPerformed
     SimpleDateFormat entry=new SimpleDateFormat("yyyy-MM-dd");
-    double cp,sp;
+    double cp,sp,rcp,rsp;
     private void showActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showActionPerformed
         // TODO add your handling code here:
         try{
         String sql="SELECT * FROM Sell WHERE [Date] BETWEEN '"+entry.format(fromdate.getDate())+"' AND '"+entry.format(todate.getDate())+"'";
         rs=conn.prepareStatement(sql).executeQuery();
         cp=0;sp=0;
+        int in=0;
         while(rs.next())
         {
-            sp+=rs.getDouble("Total")*(1d-rs.getDouble("Discount")/100d);
+            if(in!=rs.getInt("Invoice_no")){
+            sp+=rs.getDouble("Gtotal"); in=rs.getInt("Invoice_no");}
             cp+=rs.getDouble("Cost_price");
         }
+        sql="SELECT * FROM Return WHERE [Date] BETWEEN '"+entry.format(fromdate.getDate())+"' AND '"+entry.format(todate.getDate())+"'";
+        rs=conn.prepareStatement(sql).executeQuery();
+        rsp=0;rcp=0;in=0;
+        while(rs.next())
+        {
+            if(in!=rs.getInt("Invoice_no")){
+            rsp-=rs.getDouble("Gtotal"); in=rs.getInt("Invoice_no");}
+            rcp-=rs.getDouble("Cost_price");
+        }
         slinc.setText(Format(sp));
-        tinc.setText(Format(sp));
+        retsale.setText(Format(rsp));
+        tinc.setText(Format(sp+rsp));
         cogs.setText(Format(cp));
-        tcogs.setText(Format(cp));
-        cogspercent.setText(Double.toString(Math.round(cp/sp*10000d)/100d)+"%");
-        tcogspercent.setText(Double.toString(Math.round(cp/sp*10000d)/100d)+"%");
-        grossprofitpercent.setText(Double.toString(Math.round((sp-cp)/sp*10000d)/100d)+"%");
-        grossprofit.setText(Format(sp-cp));
+        retcogs.setText(Format(rcp));
+        tcogs.setText(Format(cp+rcp));
+        tcogspercent.setText(Double.toString(Math.round((cp+rcp)/(sp+rsp)*10000d)/100d)+"%");
+        grossprofitpercent.setText(Double.toString(Math.round((sp+rsp-cp-rcp)/(cp+rcp)*10000d)/100d)+"%");
+        grossprofit.setText(Format(sp+rsp-cp-rcp));
         }
         catch(Exception e){
         JOptionPane.showMessageDialog(null, e);}
@@ -387,25 +416,28 @@ public class ProfitnLoss extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel cogs;
-    private javax.swing.JLabel cogspercent;
     private com.toedter.calendar.JDateChooser fromdate;
     private javax.swing.JLabel grossprofit;
     private javax.swing.JLabel grossprofitpercent;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JRadioButton jRadioButton3;
+    private javax.swing.JLabel retcogs;
+    private javax.swing.JLabel retsale;
     private javax.swing.JButton show;
     private javax.swing.JLabel slinc;
-    private javax.swing.JLabel slincpercent;
     private javax.swing.JLabel tcogs;
     private javax.swing.JLabel tcogspercent;
     private javax.swing.JLabel tinc;

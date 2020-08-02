@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fa2e3aac-3513-4326-86fa-3b4e19b85c8a">
-	<property name="ireport.zoom" value="1.8150000000000008"/>
+	<property name="ireport.zoom" value="1.5000000000000033"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="Title" fontName="Times New Roman" isBold="true" pdfFontName="Times-Bold"/>
@@ -15,6 +15,7 @@
 	</style>
 	<parameter name="logo" class="java.lang.String"/>
 	<parameter name="billosoft" class="java.lang.String"/>
+	<parameter name="gtotal" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[SELECT
      Item_List.`Date` AS Date,
@@ -109,7 +110,7 @@ FROM
 			</staticText>
 			<staticText>
 				<reportElement style="Column header" x="316" y="0" width="79" height="15" forecolor="#736343" uuid="8481524e-3501-4694-9c4b-677e76d0eccb"/>
-				<text><![CDATA[Rate]]></text>
+				<text><![CDATA[Rate (in ₹)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="Column header" x="395" y="0" width="79" height="15" forecolor="#736343" uuid="b47e4b05-0961-4012-aa04-c9a9e053d5c0"/>
@@ -117,62 +118,76 @@ FROM
 			</staticText>
 			<staticText>
 				<reportElement style="Column header" x="474" y="0" width="79" height="15" forecolor="#736343" uuid="c52db9bb-dbad-44ee-b600-98e6b6de9cf4"/>
-				<text><![CDATA[Total]]></text>
+				<text><![CDATA[Total (in ₹)]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="23" splitType="Stretch">
+		<band height="22" splitType="Stretch">
 			<textField>
-				<reportElement x="1" y="3" width="40" height="20" uuid="0f7f5993-0da4-4cd9-b034-3cd7bd883ae2"/>
+				<reportElement x="0" y="1" width="40" height="20" uuid="0f7f5993-0da4-4cd9-b034-3cd7bd883ae2"/>
 				<textFieldExpression><![CDATA[$F{ID}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="41" y="3" width="63" height="20" uuid="bbe40537-1695-4dd6-9669-a9ac481da442"/>
+				<reportElement x="41" y="1" width="63" height="20" uuid="bbe40537-1695-4dd6-9669-a9ac481da442"/>
 				<textFieldExpression><![CDATA[$F{Date}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="200" y="3" width="110" height="20" uuid="226d6006-6eb8-421f-88ed-e079b641c40c"/>
+				<reportElement x="200" y="1" width="110" height="20" uuid="226d6006-6eb8-421f-88ed-e079b641c40c"/>
 				<textFieldExpression><![CDATA[$F{Item_name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="104" y="3" width="96" height="20" uuid="e4b2d79e-0eed-406a-9104-7eb3ff8fd8ed"/>
+				<reportElement x="104" y="1" width="96" height="20" uuid="e4b2d79e-0eed-406a-9104-7eb3ff8fd8ed"/>
 				<textFieldExpression><![CDATA[$F{Transportation}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="316" y="3" width="79" height="20" uuid="33455be4-dce6-484c-9b52-59e3e8e99d9c"/>
+				<reportElement x="316" y="1" width="79" height="20" uuid="33455be4-dce6-484c-9b52-59e3e8e99d9c"/>
 				<textFieldExpression><![CDATA[$F{Rate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="395" y="3" width="79" height="20" uuid="560a9322-084f-4291-9b0f-4f52fb52256b"/>
+				<reportElement x="395" y="1" width="79" height="20" uuid="560a9322-084f-4291-9b0f-4f52fb52256b"/>
 				<textFieldExpression><![CDATA[$F{Quantity}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="474" y="3" width="81" height="20" uuid="04ecae54-281a-4f74-9ad7-2ab2b28b803f"/>
+				<reportElement x="474" y="1" width="81" height="20" uuid="04ecae54-281a-4f74-9ad7-2ab2b28b803f"/>
 				<textFieldExpression><![CDATA[$F{Total}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="17" splitType="Stretch">
+		<band height="39" splitType="Stretch">
 			<staticText>
-				<reportElement x="379" y="3" width="152" height="11" uuid="e8571383-2296-4651-bb13-738b1352a6cf"/>
+				<reportElement x="371" y="28" width="152" height="11" uuid="e8571383-2296-4651-bb13-738b1352a6cf"/>
 				<textElement textAlignment="Right">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Generated in Billosoft]]></text>
 			</staticText>
 			<image>
-				<reportElement x="533" y="3" width="11" height="11" uuid="2a5890de-78d9-4d09-8f34-341aadc656f5"/>
+				<reportElement x="525" y="28" width="11" height="11" uuid="2a5890de-78d9-4d09-8f34-341aadc656f5"/>
 				<imageExpression><![CDATA[$P{billosoft}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="8" y="3" width="194" height="11" uuid="df9a95b7-9813-4ea8-90b0-75e76e16bc93"/>
+				<reportElement x="0" y="28" width="194" height="11" uuid="df9a95b7-9813-4ea8-90b0-75e76e16bc93"/>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Seal. Authorised Signature.]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="395" y="0" width="79" height="20" uuid="80046a7c-e6a6-43a0-9385-381a2cb978d0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total ₹  ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="475" y="1" width="78" height="20" uuid="464d3b1e-c0b5-4f48-8c5b-d7c18141b3f6"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{gtotal}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnFooter>
 	<pageFooter>
